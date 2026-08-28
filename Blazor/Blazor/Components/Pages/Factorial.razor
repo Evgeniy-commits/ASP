@@ -1,0 +1,17 @@
+﻿@page "/Factorial"
+@rendermode InteractiveServer
+<h3>Factorial</h3>
+
+<input type="number" @bind="limit"/> <h3>! = @factorial</h3>
+<button class="btn btn-primary" @onclick="Calculate">Calculate</button>
+@code 
+{
+	int limit = 0;
+	double factorial;
+	void Calculate()
+	{
+		factorial = 1;
+		for (int i = 1; i <= limit; i++)
+		factorial *= i;
+	}
+}
