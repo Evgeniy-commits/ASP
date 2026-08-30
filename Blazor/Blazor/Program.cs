@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Blazor.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //1.Добавляем стандартный HttpClient
-builder.Services.AddHttpClient();
+//builder.Services.AddHttpClient();
 
 ////2.Регистрируем отдельный клиент специально для MinesweeperApi
 builder.Services.AddHttpClient("MinesweeperApi", client =>
