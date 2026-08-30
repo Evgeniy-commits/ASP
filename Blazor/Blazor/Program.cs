@@ -2,6 +2,15 @@ using Blazor.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//1.Добавляем стандартный HttpClient
+builder.Services.AddHttpClient();
+
+////2.Регистрируем отдельный клиент специально для MinesweeperApi
+builder.Services.AddHttpClient("MinesweeperApi", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7273");
+});
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

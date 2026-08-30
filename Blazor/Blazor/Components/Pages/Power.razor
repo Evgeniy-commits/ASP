@@ -1,0 +1,138 @@
+﻿@page "/Power"
+@rendermode InteractiveServer
+
+@using System.Globalization;
+
+<h3>Power</h3>
+
+<div class="mb-3">
+    <label for="base" class="form-label">base</label>
+    <input type="text" class="form-control" id="base" 
+           @bind="baseValueString" 
+           @bind:event="oninput" 
+           @bind:after="Calculate" 
+           placeholder="Например, 2" />
+    <div class="text-danger small">@baseError</div>
+</div>
+
+<div class="mb-3">
+    <label for="exponent" class="form-label">exponent</label>
+    <input type="text" class="form-control" id="exponent" 
+           @bind="exponentValueString" 
+           @bind:event="oninput" 
+           @bind:after="Calculate" 
+           placeholder="Например, 2" />
+    <div class="text-danger small">@exponentError</div>
+</div>
+
+@if (!string.IsNullOrEmpty(resultError))
+{
+	<div class="alert alert-danger">@resultError</div>
+}
+else if (resultSet)
+{
+	<div class="mb-4">
+		@* формула над рамкой *@
+		<div class="text-start mb-2">
+			<span class="h5 font-weight-bold">
+				@baseValue<sup>@exponentValue</sup>
+			</span>
+			<span class="mx-2">=</span>
+		</div>
+
+		@* Результат в рамке, как input *@
+		<input 
+			type="text"
+			class="form-control text-center bg-light border-primary" 
+			readonly
+			 value="@ResultValue" 
+            style="cursor: default; font-size: 1.2rem;"
+            title="Результат вычисления"
+        />
+		<small class="text-muted d-block text-center mt-1">Результат операции</small>
+	</div>
+
+	@* <h4>@baseValue<sup>@exponentValue</sup> = @ResultValue</h4> *@
+}
+
+@* <button class="btn btn-primary" @onclick="Calculate">Result</button> *@
+
+@code 
+{
+	string baseValueString = "";
+    string exponentValueString = "";
+
+	double baseValue = 0;
+	double exponentValue = 0;
+	double ResultValue { get; set; }
+	bool resultSet = false;
+
+	string baseError = "";
+	string exponentError = "";
+	string resultError = "";
+
+	void Calculate()
+	{
+		baseError = "";
+		exponentError = "";
+		resultError = "";
+		resultSet = false;
+
+		 // ПАРСИНГ ЧИСЛЕЛ 
+        
+        if (!double.TryParse(baseValueString, NumberStyles.Any, 
+            CultureInfo.InvariantCulture, out baseValue))
+        {
+            baseError = "Некорректное число основания";
+            return;
+        }
+
+        if (!double.TryParse(exponentValueString, NumberStyles.Any, 
+            CultureInfo.InvariantCulture, out exponentValue))
+        {
+            exponentError = "Некорректное число показателя";
+            return;
+        }
+        // --------------------------------------
+
+		//Валидация основания
+		if (baseValue == 0 && exponentValue < 0)
+		{
+			resultError  = "0 в отрицательной степени";
+			return;
+		}
+
+		//Допустимый диапазон для экспоненты, чтобы не завис сервер
+		if (exponentValue < -1000 || exponentValue > 1000)
+		{
+			exponentError = "Диапазон значений показателя [-1000; 1000]";
+			return;
+		}
+
+		try
+		{
+			if (exponentValue >= 0)
+			{
+				ResultValue = Math.Pow(baseValue, exponentValue);
+			}
+			else
+			{
+				double positiveExp = -exponentValue;
+				double denominator = Math.Pow(baseValue, positiveExp);
+
+				if (denominator == 0 || double.IsInfinity(denominator))
+				{
+					resultError = "Деление на ноль";
+					return;
+				}
+
+				ResultValue = 1 / denominator;
+			}
+			resultSet = true;
+		}
+		catch (Exception ex)
+		{
+			resultError = $"Error: {ex.Message}";
+		}
+	}
+} 
