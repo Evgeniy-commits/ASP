@@ -1,15 +1,20 @@
 ﻿@inherits LayoutComponentBase
+@using Blazor.Services
+@inject MenuStateService MenuService
+@implements IDisposable
 
-<div class="page">
-    <div class="sidebar">
+<div class="page-container" style="display: flex; min-height: 100vh; overflow: hidden;">
+    
+    <div class="sidebar @(MenuService.IsOpen ? "" : "collapsed")" 
+         @key="MenuService.IsOpen" 
+         style="width: 250px; transition: width 0.3s ease-in-out; overflow: hidden;">
         <NavMenu />
     </div>
 
-    <main>
-        <div class="top-row px-4">
+    <main class="content-wrapper" style="flex-grow: 1; overflow-y: auto; padding: 0;">
+        <div class="top-row px-4" style="padding-top: 0.5rem; background: #f8f9fa;">
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
         </div>
-
         <article class="content px-4">
             @Body
         </article>
@@ -21,3 +26,34 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+    // Флаг, который мы сами будем ставить в true при удалении
+    private bool _isDisposed = false;
+
+    protected override void OnInitialized()
+    {
+        MenuService.OnChange += HandleMenuChange;
+    }
+
+    private void HandleMenuChange()
+    {
+        // ПРОВЕРКА: Если компонент уже удален, не пытаемся вызвать перерисовку
+        if (!_isDisposed)
+        {
+            StateHasChanged();
+        }
+    }
+
+    public void Dispose()
+    {
+        // 1. Сначала отписываемся от события (чтобы сервис не пытался дернуть удаленный компонент)
+        if (MenuService != null)
+        {
+            MenuService.OnChange -= HandleMenuChange;
+        }
+        
+        // 2. Ставим флаг, что мы "умерли"
+        _isDisposed = true;
+    }
+}

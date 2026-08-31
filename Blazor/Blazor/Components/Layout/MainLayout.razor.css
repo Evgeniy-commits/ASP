@@ -46,16 +46,17 @@ main {
     }
 }
 
-@media (min-width: 641px) {
+/*@media (min-width: 641px) {
     .page {
         flex-direction: row;
     }
 
-    .sidebar {
-        width: 250px;
-        height: 100vh;
-        position: sticky;
-        top: 0;
+    .sidebar {*/
+        /*width: 250px;*/
+        /*height: 100vh;*/
+      /*  position: sticky;
+        top: 0;*/
+      /*align-self: flex-start;
     }
 
     .top-row {
@@ -74,6 +75,43 @@ main {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
+}*/
+
+
+/* Контейнер для кнопки-переключателя */
+/*.toggle-btn-container {
+    z-index: 10;*/ /* Чтобы кнопка была поверх всего */
+/*}*/
+
+/* Убираем любые лишние отступы у кнопки */
+/*.navbar-toggler {
+    padding: 0 !important;
+    margin: 0 !important;
+}*/
+
+@media (min-width: 641px) {
+    .sidebar {
+        height: 100vh;
+        flex-shrink: 0;
+        min-width: 0;
+        width: 250px;
+        overflow: hidden;
+        /* position: sticky; <-- Убедись, что этого нет */
+    }
+
+        .sidebar.collapsed {
+            width: 0 !important; /* Главное правило */
+            min-width: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            /* Скрываем внутренний скроллбар, если он появляется */
+            scrollbar-width: none;
+        }
+
+            /* Для Firefox */
+            .sidebar.collapsed::-webkit-scrollbar {
+                display: none;
+            }
 }
 
 #blazor-error-ui {

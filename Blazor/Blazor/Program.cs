@@ -1,38 +1,40 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Blazor.Components;
+using Blazor.Services; // <--- ЭТА СТРОКА ОБЯЗАНА БЫТЬ ЗДЕСЬ, В САМОМ НАЧАЛЕ
 
 var builder = WebApplication.CreateBuilder(args);
 
-//1.Добавляем стандартный HttpClient
-//builder.Services.AddHttpClient();
+// Регистрируем сервис меню (ОДНОКРАТНО)
+builder.Services.AddSingleton<MenuStateService>();
 
-////2.Регистрируем отдельный клиент специально для MinesweeperApi
+// Добавляем стандартный HttpClient
+// builder.Services.AddHttpClient();
+
+// Регистрируем отдельный клиент специально для MinesweeperApi
 builder.Services.AddHttpClient("MinesweeperApi", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7273");
+	client.BaseAddress = new Uri("https://localhost:7273");
 });
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+	.AddInteractiveServerComponents();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	app.UseExceptionHandler("/Error", createScopeForErrors: true);
+	app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+	.AddInteractiveServerRenderMode();
 
 app.Run();

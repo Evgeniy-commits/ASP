@@ -1,25 +1,23 @@
 ﻿@rendermode InteractiveServer
+@inherits ComponentBase
+@using Blazor.Services
+@inject MenuStateService MenuService
 
-@using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components.Web
-@using Microsoft.JSInterop
-
-<div class="top-row ps-3 navbar navbar-dark">
+<div class="top-row ps-3 navbar navbar-dark" style="background-color: #343a40;">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <a class="navbar-brand" href="">Blazor</a>
 
-        <!-- Кнопка-переключатель -->
         <button type="button" class="navbar-toggler"
-                @onclick="ToggleMenu"
+                @onclick="HandleToggle"
                 title="Toggle navigation">
             <span class="@arrowClass" aria-hidden="true"></span>
         </button>
     </div>
 </div>
 
-<div class="nav-scrollable">
-    <!-- Меню -->
-    <nav class="flex-column @menuClass">
+<!-- Добавлен overflow, чтобы меню не вылезало при сворачивании -->
+<div class="nav-scrollable" style="overflow-y: auto;">
+    <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="bi bi-house-door-fill me-2" aria-hidden="true"></span> Home
@@ -35,6 +33,8 @@
                 <span class="bi bi-cloud-sun-fill me-2" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
+        
+        <!-- Твои кастомные страницы -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Factorial">
                 <span class="bi bi-calculator me-2" aria-hidden="true"></span> Factorial
@@ -59,17 +59,19 @@
 </div>
 
 @code {
-    private bool isMenuOpen = true;
+    private bool isArrowDown = true;
 
-    private string arrowClass => isMenuOpen 
+    private string arrowClass => isArrowDown 
         ? "bi bi-chevron-down rotate-arrow-down" 
         : "bi bi-chevron-right rotate-arrow-right";
 
-    private string menuClass => isMenuOpen ? "" : "collapsed";
-
-    private void ToggleMenu()
+    private void HandleToggle()
     {
-        isMenuOpen = !isMenuOpen;
-        Console.WriteLine($"Menu toggled: {isMenuOpen}"); 
+        isArrowDown = !isArrowDown;
+        
+        // Вызываем метод сервиса
+        MenuService?.Toggle();
+        
+        System.Console.WriteLine("[NavMenu] Вызван сервис переключения");
     }
 }
