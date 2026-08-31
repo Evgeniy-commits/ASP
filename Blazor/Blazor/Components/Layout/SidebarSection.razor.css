@@ -1,0 +1,33 @@
+﻿/* SidebarSection.razor.css */
+
+.sidebar {
+	width: 250px;
+	flex-shrink: 0;
+	transition: width 0.3s ease-in-out, visibility 0.3s;
+	overflow: hidden;
+	background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+	height: 100vh; /* Важно: сайдбар должен быть во всю высоту */
+}
+
+	.sidebar.collapsed {
+		width: 0 !important;
+		visibility: hidden;
+		border: none;
+		padding: 0;
+	}
+
+		/* Скрываем текст и иконки внутри свернутого меню, чтобы не просвечивали */
+		.sidebar.collapsed .nav-link span,
+		.sidebar.collapsed .navbar-brand {
+			display: none;
+		}
+
+	/* Убираем скроллбары, если они появляются при анимации */
+	.sidebar::-webkit-scrollbar {
+		display: none;
+	}
+
+.sidebar {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}

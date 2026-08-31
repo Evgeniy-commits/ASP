@@ -1,0 +1,51 @@
+﻿@rendermode InteractiveServer
+@inherits ComponentBase
+@implements IDisposable
+@using Blazor.Services
+@inject MenuStateService MenuService
+
+<button class="floating-toggle-btn"
+        type="button"
+        @onclick="HandleToggle"
+        aria-label="Toggle menu"
+        style="position: fixed; top: 10px; left: @(MenuService.IsOpen ? "260px" : "15px"); z-index: 9999; transition: left 0.3s ease-in-out;">
+    <span class="@arrowClass" aria-hidden="true"></span>
+</button>
+
+@code {
+    private bool isArrowDown = true;
+    private bool _isDisposed = false;
+
+    private string arrowClass => isArrowDown
+        ? "bi bi-chevron-down rotate-arrow-down"
+        : "bi bi-chevron-right rotate-arrow-right";
+
+    protected override void OnInitialized()
+    {
+        MenuService.OnChange += HandleMenuChange;
+    }
+
+    private void HandleToggle()
+    {
+        isArrowDown = !isArrowDown;
+        MenuService?.Toggle();
+    }
+
+    private void HandleMenuChange()
+    {
+        if (_isDisposed) return;
+
+        // InvokeAsync гарантирует, что StateHasChanged выполнится
+        // в правильном синхронизационном контексте Blazor
+        InvokeAsync(() => StateHasChanged());
+    }
+
+    public void Dispose()
+    {
+        _isDisposed = true;
+        if (MenuService != null)
+        {
+            MenuService.OnChange -= HandleMenuChange;
+        }
+    }
+}

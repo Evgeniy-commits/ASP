@@ -1,0 +1,34 @@
+﻿@rendermode InteractiveServer
+@inherits ComponentBase
+@implements IDisposable
+@using Blazor.Services
+@inject MenuStateService MenuService
+
+<div class="sidebar @(MenuService.IsOpen ? "" : "collapsed")"
+     style="width: 250px; transition: width 0.3s ease-in-out; overflow: hidden; flex-shrink: 0;">
+    <NavMenu />
+</div>
+
+@code {
+    private bool _isDisposed = false;
+
+    protected override void OnInitialized()
+    {
+        MenuService.OnChange += HandleMenuChange;
+    }
+
+    private void HandleMenuChange()
+    {
+        if (_isDisposed) return;
+        InvokeAsync(() => StateHasChanged());
+    }
+
+    public void Dispose()
+    {
+        _isDisposed = true;
+        if (MenuService != null)
+        {
+            MenuService.OnChange -= HandleMenuChange;
+        }
+    }
+}

@@ -1,134 +1,54 @@
-.page {
-    position: relative;
+/* MainLayout.razor.css или site.css */
+
+.page-container {
     display: flex;
-    flex-direction: column;
+    min-height: 100vh;
+    overflow: hidden; /* Важно: обрезает всё, что вылезает за экран */
 }
 
-main {
-    flex: 1;
+.content-wrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+    position: relative; /* Контейнер для позиционирования кнопки */
 }
 
-.sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-}
-
+/* Шапка и контент: отступы, чтобы текст не наезжал на кнопку */
 .top-row {
+    height: 3.5rem;
     background-color: #f7f7f7;
     border-bottom: 1px solid #d6d5d5;
-    justify-content: flex-end;
-    height: 3.5rem;
     display: flex;
     align-items: center;
+    padding-left: 60px; /* Отступ слева под кнопку */
+    padding-right: 1rem;
 }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        white-space: nowrap;
-        margin-left: 1.5rem;
-        text-decoration: none;
-    }
-
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
-
-    .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-@media (max-width: 640.98px) {
-    .top-row {
-        justify-content: space-between;
-    }
-
-    .top-row ::deep a, .top-row ::deep .btn-link {
-        margin-left: 0;
-    }
+.content {
+    padding-left: 60px; /* Отступ слева под кнопку */
+    padding-right: 1.5rem;
+    flex-grow: 1;
 }
 
-/*@media (min-width: 641px) {
-    .page {
-        flex-direction: row;
+/* Адаптив для мобильных (если нужен отдельный режим, а не просто скрытие) */
+@media (max-width: 640px) {
+    .page-container {
+        flex-direction: column;
     }
 
-    .sidebar {*/
-        /*width: 250px;*/
-        /*height: 100vh;*/
-      /*  position: sticky;
-        top: 0;*/
-      /*align-self: flex-start;
-    }
-
-    .top-row {
-        position: sticky;
-        top: 0;
-        z-index: 1;
-    }
-
-    .top-row.auth ::deep a:first-child {
-        flex: 1;
-        text-align: right;
-        width: 0;
-    }
-
-    .top-row, article {
-        padding-left: 2rem !important;
-        padding-right: 1.5rem !important;
-    }
-}*/
-
-
-/* Контейнер для кнопки-переключателя */
-/*.toggle-btn-container {
-    z-index: 10;*/ /* Чтобы кнопка была поверх всего */
-/*}*/
-
-/* Убираем любые лишние отступы у кнопки */
-/*.navbar-toggler {
-    padding: 0 !important;
-    margin: 0 !important;
-}*/
-
-@media (min-width: 641px) {
     .sidebar {
-        height: 100vh;
-        flex-shrink: 0;
-        min-width: 0;
-        width: 250px;
-        overflow: hidden;
-        /* position: sticky; <-- Убедись, что этого нет */
+        width: 100%;
+        height: auto;
+        position: relative;
+        z-index: auto;
     }
 
         .sidebar.collapsed {
-            width: 0 !important; /* Главное правило */
-            min-width: 0 !important;
-            padding: 0 !important;
-            border: none !important;
-            /* Скрываем внутренний скроллбар, если он появляется */
-            scrollbar-width: none;
+            display: none; /* На мобильных просто скрываем блок */
+            width: auto;
+            visibility: visible;
         }
 
-            /* Для Firefox */
-            .sidebar.collapsed::-webkit-scrollbar {
-                display: none;
-            }
-}
-
-#blazor-error-ui {
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
-}
-
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
+    .content-wrapper {
+        margin-top: 60px;
     }
+}

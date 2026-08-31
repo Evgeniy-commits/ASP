@@ -6,12 +6,6 @@
 <div class="top-row ps-3 navbar navbar-dark" style="background-color: #343a40;">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <a class="navbar-brand" href="">Blazor</a>
-
-        <button type="button" class="navbar-toggler"
-                @onclick="HandleToggle"
-                title="Toggle navigation">
-            <span class="@arrowClass" aria-hidden="true"></span>
-        </button>
     </div>
 </div>
 
@@ -59,19 +53,4 @@
 </div>
 
 @code {
-    private bool isArrowDown = true;
-
-    private string arrowClass => isArrowDown 
-        ? "bi bi-chevron-down rotate-arrow-down" 
-        : "bi bi-chevron-right rotate-arrow-right";
-
-    private void HandleToggle()
-    {
-        isArrowDown = !isArrowDown;
-        
-        // Вызываем метод сервиса
-        MenuService?.Toggle();
-        
-        System.Console.WriteLine("[NavMenu] Вызван сервис переключения");
-    }
 }
