@@ -1,54 +1,75 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
+﻿@rendermode InteractiveServer
+
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
         <a class="navbar-brand" href="">Blazor</a>
+
+        <!-- Кнопка-переключатель -->
+        <button type="button" class="navbar-toggler"
+                @onclick="ToggleMenu"
+                title="Toggle navigation">
+            <span class="@arrowClass" aria-hidden="true"></span>
+        </button>
     </div>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
+<div class="nav-scrollable">
+    <!-- Меню -->
+    <nav class="flex-column @menuClass">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                <span class="bi bi-house-door-fill me-2" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+                <span class="bi bi-plus-square-fill me-2" aria-hidden="true"></span> Counter
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+                <span class="bi bi-cloud-sun-fill me-2" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Factorial">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Factorial
+                <span class="bi bi-calculator me-2" aria-hidden="true"></span> Factorial
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Power">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Power
+                <span class="bi bi-power me-2" aria-hidden="true"></span> Power
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Fibonachy">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Fibonachy
+                <span class="bi bi-sort-numeric-down me-2" aria-hidden="true"></span> Fibonachy
             </NavLink>
         </div>
-
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Minesweeper">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Minesweeper
+                <span class="bi bi-explode me-2" aria-hidden="true"></span> Minesweeper
             </NavLink>
         </div>
     </nav>
 </div>
 
+@code {
+    private bool isMenuOpen = true;
+
+    private string arrowClass => isMenuOpen 
+        ? "bi bi-chevron-down rotate-arrow-down" 
+        : "bi bi-chevron-right rotate-arrow-right";
+
+    private string menuClass => isMenuOpen ? "" : "collapsed";
+
+    private void ToggleMenu()
+    {
+        isMenuOpen = !isMenuOpen;
+        Console.WriteLine($"Menu toggled: {isMenuOpen}"); 
+    }
+}
