@@ -1,13 +1,4 @@
-﻿@rendermode InteractiveServer
-@inherits ComponentBase
-@using Blazor.Services
-@inject MenuStateService MenuService
-
-<div class="top-row ps-3 navbar navbar-dark" style="background-color: #343a40;">
-    <div class="container-fluid d-flex justify-content-between align-items-center">
-        <a class="navbar-brand" href="">Blazor</a>
-    </div>
-</div>
+﻿@inherits ComponentBase
 
 <!-- Добавлен overflow, чтобы меню не вылезало при сворачивании -->
 <div class="nav-scrollable" style="overflow-y: auto;">
@@ -28,7 +19,7 @@
             </NavLink>
         </div>
         
-        <!-- Твои кастомные страницы -->
+        <!--  кастомные страницы -->
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Factorial">
                 <span class="bi bi-calculator me-2" aria-hidden="true"></span> Factorial

@@ -4,9 +4,17 @@
 @using Blazor.Services
 @inject MenuStateService MenuService
 
-<div class="sidebar @(MenuService.IsOpen ? "" : "collapsed")"
-     style="width: 250px; transition: width 0.3s ease-in-out; overflow: hidden; flex-shrink: 0;">
-    <NavMenu />
+<!-- Весь стиль сайдбара теперь здесь -->
+<div class="sidebar @(MenuService.IsOpen ? "" : "collapsed")">
+    <!-- Логотип можно вернуть сюда, если хочешь, чтобы он был частью меню -->
+    <div class="sidebar-header px-3 py-2">
+         <a class="navbar-brand text-white text-decoration-none" href="">Blazor</a>
+    </div>
+
+    <!-- Скролл только если меню открыто и контента много -->
+    <div class="nav-scrollable" style="overflow-y: auto; height: calc(100vh - 50px);">
+        <NavMenu />
+    </div>
 </div>
 
 @code {

@@ -1,4 +1,4 @@
-html, body {
+﻿html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -49,3 +49,147 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+
+
+
+
+
+
+
+/*.page-container {
+    display: flex;
+    min-height: 100vh;
+    overflow: hidden;
+}*/
+
+.content-wrapper {
+    flex-grow: 1;
+    overflow-y: auto;
+    position: relative;*/
+    /* Тёмный фон страницы, чтобы меню не выглядело как яркая вспышка */
+    background-color: #253b36;
+}
+
+/* --- Шапка (Top Row) --- */
+/*.top-row {
+    height: 3.5rem;*/
+    /* Строго изумрудный цвет из твоего градиента */
+    /*background-color: #2b4d45;
+    border-bottom: 2px solid #537e7d;
+    display: flex;
+    align-items: center;
+    padding-left: 60px;
+    padding-right: 1rem;
+    color: #fff;
+}*/
+
+    /* ИСПРАВЛЕНО: Добавлена точка перед top-row */
+    /*.top-row a {
+        color: #a8e6cf;*/ /* Мятный акцент */
+        /*text-decoration: none;
+        white-space: nowrap;
+    }
+
+        .top-row a:hover {
+            color: #dcedc8;
+            text-decoration: none;
+        }*/
+
+/* --- Контент --- */
+/*.content {
+    padding-left: 60px;
+    padding-right: 1.5rem;
+    flex-grow: 1;*/
+    /* Светло-бирюзовый текст хорошо читается на тёмном фоне */
+    /*color: #e0f2f1;
+}*/
+
+/* --- Иконки --- */
+/*.bi {
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+}*/
+
+/* --- Меню (Sidebar) --- */
+/* Стили для ссылок ВНУТРИ меню. Больше нигде не используй .nav-link без .sidebar, 
+   чтобы не ломать ссылки в других местах сайта */
+.sidebar {
+    background-color: #0b0b0f; /* очень тёмный, почти чёрный фон */
+    color: #e0e0e0;
+}
+
+    .sidebar .nav-link {
+        color: rgba(255, 255, 255, 0.65); /* не чисто белый, а приглушённый */
+        text-decoration: none;
+        padding: 0.75rem 1rem;
+        display: flex;
+        align-items: center;
+        border-radius: 6px;
+        margin: 2px 8px;
+        transition: all 0.2s ease;
+        font-weight: 500;
+        border-left: 3px solid transparent;
+    }
+
+        .sidebar .nav-link:hover {
+            /* очень лёгкая заливка, почти незаметная */
+            background-color: rgba(255, 255, 255, 0.04);
+            color: rgba(255, 255, 255, 0.95) !important;
+        }
+
+        .sidebar .nav-link.active {
+            /* чуть плотнее, чем при наведении, но всё ещё очень сдержанно */
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #ffffff !important;
+            font-weight: 600;
+            border-left: 3px solid #8bc34a; /* более приглушённый акцент вместо яркого #dcedc8 */
+        }
+
+        .sidebar .nav-link .bi {
+            color: rgba(255, 255, 255, 0.55); /* иконки ещё темнее */
+        }
+
+        .sidebar .nav-link.active .bi {
+            color: #8bc34a;
+        }
+
+    .sidebar .navbar-brand {
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+    }
+
+/* --- Кнопка переключения меню --- */
+/*.floating-toggle-btn {
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.8);*/ /* Чуть прозрачнее, чтобы сливаться с фоном */
+    /*color: #2b4d45;*/ /* Цвет текста в тон шапке */
+    /*box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 0;
+    margin: 0;
+}
+
+    .floating-toggle-btn:hover {
+        background-color: #fff;
+        transform: scale(1.05);
+    }*/
+
+/* --- Анимация стрелки --- */
+/*.rotate-arrow-down {
+    transform: rotate(0deg);
+    transition: transform 0.3s ease;
+}
+
+.rotate-arrow-right {
+    transform: rotate(-90deg);
+    transition: transform 0.3s ease;
+}*/

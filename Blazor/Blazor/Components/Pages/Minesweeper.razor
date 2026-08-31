@@ -131,59 +131,6 @@ else
         _httpClient = ClientFactory.CreateClient("MinesweeperApi");
     }
 
-
-	// Синхронный метод-обертка, чтобы избежать ошибки конвертации типов
- //    Он принимает событие, делает preventDefault через JS (или просто игнорирует стандартное поведение, если повезет)
- //    НО! Самый надежный способ в чистом Blazor без JS файлов - это просто обработать событие.
- //    Браузер все равно покажет меню, если мы не используем JS.
-    
- //    ПОЭТОМУ: Используем трюк. Мы НЕ можем сделать preventDefault чисто на C#.
- //    Нам нужно внедрить маленький JS скрипт прямо здесь.
-    
-   //  [Inject] IJSRuntime JS { get; set; } = default!;
-   //  private IJSObjectReference? module;
-
-   //  protected override async Task OnAfterRenderAsync(bool firstRender)
-   //  {
-   //      if (firstRender)
-   //      {
-   //          // Импортируем модуль, который содержит функцию preventDefault
-   //          module = await JS.InvokeAsync<IJSObjectReference>("import", "/js/prevent-default.js");
-   //      }
-   // }
-
-   //  async Task HandleRightClickSync(MouseEventArgs e, int r, int c)
-   //  {
-   //      // 1. Предотвращаем стандартное меню браузера через JS
-   //      if (module != null) 
-   //      {
-   //          await module.InvokeVoidAsync("prevent", e);
-   //      }
-
-   //      // 2. Выполняем логику игры
-   //      await HandleRightClickLogic(r, c);
-   //  }
-
-   //  async Task HandleRightClickLogic(int r, int c)
-   //  {
-   //      // if (gameState?.IsGameOver == true) return;
-
-   //      // await _httpClient.PostAsJsonAsync("api/game/toggle-flag", new { Row = r, Col = c });
-   //      // await FetchState();
-
-		 // if (gameState?.IsGameOver == true || gameState?.IsWon == true) return;
-
-   //      try 
-   //      {
-   //          await _httpClient.PostAsJsonAsync("api/game/toggle-flag", new { Row = r, Col = c });
-   //          await FetchState();
-   //      }
-   //      catch (Exception ex) 
-   //      {
-   //          errorMessage = "Ошибка флага: " + ex.Message;
-   //      }
-   //  }
-
 	async Task StartGame()
 	{	
 		errorMessage = "";
@@ -285,16 +232,6 @@ else
 		}
 	}
 
-	// async Task HandleRightClick(int r, int c)
-	// {
-	// 	if (gameState?.IsGameOver == true) return;
-
-	// 	await Http.PostAsJsonAsync("api/game/toggle-flag", new { Row = r, Col = c });
-	// 	await FetchState();
-	// }
-
-	// Мы НЕ передаем MouseEventArgs в JS (это ломает сериализацию).
-    // Вместо этого мы вызываем JS-код напрямую, который берет event из контекста.
 	async Task HandleRightClick(MouseEventArgs e, int r, int c)
     {
         //e.PreventDefault(); // <-- ЭТО ОТМЕНЯЕТ СТАНДАРТНОЕ МЕНЮ БРАУЗЕРА
@@ -338,14 +275,6 @@ else
 
 	string GetCellStyle(CellStateDto cell)
 	{
-		// //Если состояние не загружено
-		// if (gameState == null) return "background-color: lightgray;";
-
-		// if (cell.IsRevealed && cell.IsMine && !gameState.IsWon) return "background-color: red; color: white;";
-		// if (cell.IsRevealed && cell.IsMine && gameState.IsWon) return "background-color: green; color: white;";
-		// if (cell.IsRevealed && cell.NeighborCount == 0) return "background-color: white;";
-		// if (cell.IsFlagged) return "background-color: yellow;";
-		// return "background-color: lightgray;";
 		if (gameState == null) return "background-color: lightgray; width: 15px; height: 15px; display: flex;" + 
 									"justify-content: center; align-items: center; cursor: pointer; user-select: none;";
 

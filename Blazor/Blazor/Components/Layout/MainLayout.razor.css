@@ -10,18 +10,30 @@
     flex-grow: 1;
     overflow-y: auto;
     position: relative; /* Контейнер для позиционирования кнопки */
+    background-color: #f4faf7;
 }
 
 /* Шапка и контент: отступы, чтобы текст не наезжал на кнопку */
 .top-row {
     height: 3.5rem;
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #d6d5d5;
+    background-color: #e8f5f0;
+    border-bottom: 2px solid #b8d4ce;
     display: flex;
     align-items: center;
     padding-left: 60px; /* Отступ слева под кнопку */
     padding-right: 1rem;
 }
+    /* Ссылки в шапке — глубокий изумрудный вместо чёрного */
+    .top-row a {
+        color: #2b4d45;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .top-row a:hover {
+        color: #537e7d;
+        text-decoration: underline;
+    }
 
 .content {
     padding-left: 60px; /* Отступ слева под кнопку */
@@ -29,26 +41,4 @@
     flex-grow: 1;
 }
 
-/* Адаптив для мобильных (если нужен отдельный режим, а не просто скрытие) */
-@media (max-width: 640px) {
-    .page-container {
-        flex-direction: column;
-    }
 
-    .sidebar {
-        width: 100%;
-        height: auto;
-        position: relative;
-        z-index: auto;
-    }
-
-        .sidebar.collapsed {
-            display: none; /* На мобильных просто скрываем блок */
-            width: auto;
-            visibility: visible;
-        }
-
-    .content-wrapper {
-        margin-top: 60px;
-    }
-}
