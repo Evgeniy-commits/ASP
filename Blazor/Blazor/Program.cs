@@ -14,7 +14,7 @@ builder.Services.AddSingleton<MenuStateService>();
 // Регистрируем отдельный клиент специально для MinesweeperApi
 builder.Services.AddHttpClient("MinesweeperApi", client =>
 {
-	client.BaseAddress = new Uri("https://localhost:7273");
+	client.BaseAddress = new Uri("http://localhost:5000");
 });
 
 // Add services to the container.
