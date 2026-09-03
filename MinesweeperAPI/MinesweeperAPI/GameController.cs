@@ -6,7 +6,7 @@ using MinesweeperAPI.Models;
 namespace MinesweeperAPI.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("api/api/game")]
 
 	public class GameController : ControllerBase
 	{
