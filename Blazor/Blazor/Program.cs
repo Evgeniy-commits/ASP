@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Blazor.Components;
 using Blazor.Services; // <--- ÝÒÀ ÑÒÐÎÊÀ ÎÁßÇÀÍÀ ÁÛÒÜ ÇÄÅÑÜ, Â ÑÀÌÎÌ ÍÀ×ÀËÅ
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 

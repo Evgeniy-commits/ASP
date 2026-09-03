@@ -1,0 +1,17 @@
+﻿@page "/TaskList"
+@rendermode InteractiveServer
+
+<h2>TaskList</h2>
+
+<input type="text" placeholder="новая задача" @bind="description" />
+<button @onclick = "AddTask">Добавить</button>
+
+<ul>
+	@foreach(TODOList.Task task in list)
+	{
+		<li>@task.Description</li>
+	}
+</ul>
+
+@code{
+}
