@@ -1,0 +1,37 @@
+﻿@rendermode InteractiveServer
+@inherits ComponentBase
+@implements IDisposable
+@using TODOList.Services
+@inject MenuStateService MenuService
+
+
+<!-- Cтиль сайдбара -->
+<div class="sidebar @(MenuService.IsOpen ? "" : "collapsed")">
+	<div>
+		<NavMenu />
+	</div>
+</div>
+
+@code {
+	bool _isDisposed = false;
+
+	protected override void OnInitialized()
+	{
+		MenuService.OnChange += HandleMenuChange;
+	}
+
+	private void HandleMenuChange()
+	{
+		if (_isDisposed) return;
+		InvokeAsync(() => StateHasChanged());
+	}
+
+	public void Dispose()
+	{
+		_isDisposed = true;
+		if (MenuService != null)
+		{
+			MenuService.OnChange -= HandleMenuChange;
+		}
+	}
+}

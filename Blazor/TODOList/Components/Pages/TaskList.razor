@@ -1,15 +1,22 @@
 ﻿@page "/TaskList"
 @rendermode InteractiveServer
 
-<h2>TaskList</h2>
-
+<h1>TaskList</h1>
+<div class="statistics">
+	<h3>Выполнено задач: @list.Where(t => t.DONE == true).ToList().Count</h3>
+	<h3>Осталось задач: @list.Where(t => t.DONE == false).ToList().Count</h3>
+	<h3>Общее количество задач: @list.Count</h3>
+</div>
 <input type="text" placeholder="новая задача" @bind="description" />
 <button @onclick = "AddTask">Добавить</button>
 
 <ul>
 	@foreach(TODOList.Task task in list)
 	{
-		<li>@task.Description</li>
+		<li>
+			<input type="checkbox" @bind="@task.DONE" />
+			<span>@task.Description</span>
+		</li>
 	}
 </ul>
 

@@ -8,7 +8,7 @@ public class ApiLauncherService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        var exePath = @"C:\Users\Admin\source\repos\ASP\MinesweeperApi\out\MinesweeperAPI.exe";
+        string exePath = @"C:\Users\Admin\source\repos\ASP\MinesweeperApi\out\MinesweeperAPI.exe";
 
         if (!File.Exists(exePath))
         {
@@ -31,7 +31,7 @@ public class ApiLauncherService : IHostedService
         };
 
         // Собираем ключи без LINQ
-        var keysToRemove = new List<string>();
+        List<string> keysToRemove = new List<string>();
         foreach (string? key in _apiProcess.StartInfo.EnvironmentVariables.Keys)
         {
             if (key == null) continue;
@@ -42,7 +42,7 @@ public class ApiLauncherService : IHostedService
             }
         }
 
-        foreach (var key in keysToRemove)
+        foreach (string? key in keysToRemove)
         {
             _apiProcess.StartInfo.EnvironmentVariables.Remove(key);
             Console.WriteLine($"Удалена переменная: {key}");
@@ -55,7 +55,7 @@ public class ApiLauncherService : IHostedService
         {
             _apiProcess.Start();
             Console.WriteLine($"API запущен, PID: {_apiProcess.Id}");
-            Thread.Sleep(3000);
+            Thread.Sleep(1000);
 
             if (_apiProcess.HasExited)
                 Console.WriteLine($"API упал! Код: {_apiProcess.ExitCode}");
@@ -78,9 +78,9 @@ public class ApiLauncherService : IHostedService
 
     private void KillAllMinesweeperApiProcesses()
     {
-        foreach (var p in Process.GetProcessesByName("MinesweeperApi"))
+        foreach (Process? p in Process.GetProcessesByName("MinesweeperApi"))
         {
-            try { p.Kill(); p.WaitForExit(3000); } catch { }
+            try { p.Kill(); p.WaitForExit(1000); } catch { }
         }
     }
 }

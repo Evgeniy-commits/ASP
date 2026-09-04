@@ -13,8 +13,8 @@
 </button>
 
 @code {
-    private bool isArrowDown = true;
-    private bool _isDisposed = false;
+    bool isArrowDown = true;
+    bool _isDisposed = false;
 
     private string arrowClass => isArrowDown
         ? "bi bi-chevron-down rotate-arrow-down"
@@ -25,13 +25,13 @@
         MenuService.OnChange += HandleMenuChange;
     }
 
-    private void HandleToggle()
+    void HandleToggle()
     {
         isArrowDown = !isArrowDown;
         MenuService?.Toggle();
     }
 
-    private void HandleMenuChange()
+    void HandleMenuChange()
     {
         if (_isDisposed) return;
 

@@ -11,4 +11,8 @@
     <Folder Include="wwwroot\icons\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Management" Version="10.0.11" />
+  </ItemGroup>
+
 </Project>

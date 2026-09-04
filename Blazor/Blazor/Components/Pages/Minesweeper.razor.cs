@@ -9,7 +9,7 @@ namespace Blazor.Pages
 	{
 		[Inject] IHttpClientFactory ClientFactory { get; set; } = default!;
 
-		private HttpClient _httpClient = default!;
+		HttpClient _httpClient = default!;
 
 		GameStateResponse? gameState;
 		bool isLoading = false;
@@ -72,7 +72,7 @@ namespace Blazor.Pages
 					return;
 				}
 
-				var response = await _httpClient.PostAsJsonAsync("api/game/restart", new { });
+				HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/game/restart", new { });
 				gameState = await response.Content.ReadFromJsonAsync<GameStateResponse>();
 				StateHasChanged();
 			}
@@ -103,7 +103,7 @@ namespace Blazor.Pages
 		{
 			if (gameState?.IsGameOver == true || gameState?.IsWon == true) return;
 
-			var cell = gameState!.Grid[r][c];
+			CellStateDto cell = gameState!.Grid[r][c];
 
 			try
 			{
@@ -170,7 +170,7 @@ namespace Blazor.Pages
 		{
 			if (gameState == null) return "background-color: gray; width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; cursor: pointer; user-select: none;";
 
-			var baseStyle = "width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; cursor: pointer; user-select: none; border-radius: 4px;";
+			string baseStyle = "width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; cursor: pointer; user-select: none; border-radius: 4px;";
 
 			if (cell.IsRevealed)
 			{

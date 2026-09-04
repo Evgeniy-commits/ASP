@@ -1,10 +1,14 @@
 using TODOList.Components;
+using TODOList.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+//Подключаем сервис интерактивной кнопки
+builder.Services.AddScoped<MenuStateService>();
 
 var app = builder.Build();
 
