@@ -15,7 +15,12 @@
         {
             if (!string.IsNullOrEmpty(description) && !string.IsNullOrWhiteSpace(description))
             {
-                TODOList.Task task = new TODOList.Task { Description = description, DONE = false };
+                TODOList.Task task = new TODOList.Task 
+                { 
+                    Description = description, 
+                    DONE = false, 
+                    AssignTime = DateTime.Now 
+                };
                 if (!list.Contains(task)) list.Add(task);
                 description = "";
             }

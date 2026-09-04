@@ -14,8 +14,11 @@
 	@foreach(TODOList.Task task in list)
 	{
 		<li>
-			<input type="checkbox" @bind="@task.DONE" />
-			<span>@task.Description</span>
+			<input type="checkbox" @bind="@task.DONE" id="@task.Description"/>
+			<label for="@task.Description">
+				<span>@task.Description</span>
+				<span>@task.AssignTime</span>
+			</label>
 		</li>
 	}
 </ul>
