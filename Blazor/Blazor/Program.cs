@@ -1,11 +1,20 @@
 using Blazor;
 using Blazor.Components;
 using Blazor.Services;
+using Blazor.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+//Регистрация DbContext
+builder.Services.AddDbContext<BlazorContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//Регистрация сервисов рекордов
+builder.Services.AddScoped<MinesweeperService>();
 
 // Регистрируем сервис меню (ОДНОКРАТНО)
 builder.Services.AddSingleton<MenuStateService>();

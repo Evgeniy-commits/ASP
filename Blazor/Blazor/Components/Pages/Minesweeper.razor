@@ -9,91 +9,113 @@
 
 @if (isLoading)
 {
-    <p>Загрузка игры.....</p>
+	<p>Загрузка игры.....</p>
 }
 else if (gameState == null)
 {
-    <div style="text-align: center; margin-top: 20px;">
-        <button @onclick="StartGame" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Начать игру</button>
-        <p style="color: gray;">Параметры игры</p>
-    </div>
+	<div style="text-align: center; margin-top: 20px;">
+		<button @onclick="StartGame" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Начать игру</button>
+		<p style="color: gray;">Параметры игры</p>
+	</div>
 }
 else
 {
-    <div style="display: flex; gap: 15px; margin-bottom: 10px; align-items: center; flex-wrap: wrap;">
-        <label>Строки</label>
-        <input type="number" @bind="Rows" min="10" max="100" style="width: 60px; text-align: center;" />
+	//Поле имени и тамер
+	<div style="display: flex; gap: 15px; margin-bottom: 10px; align-items: center; flex-wrap: wrap;">
+		<label>Player:</label>
+		<input type="text" @bind="playerName" placeholder="Ваше имя"
+			   style="width: 150px; padding: 4px; border: 1px solid #ccc; border-radius: 4px;" />
+			@if (stopwatch.IsRunning)
+			{
+				<span style="font-weight: bold; color: #333;">
+					⏱ @((int)stopwatch.Elapsed.TotalSeconds) сек
+				</span>
+			}
+			else if (resultSaved)
+		    {
+				<span style="font-weight: bold; color: green;">
+					✅ Результат сохранён: @elapsedSeconds сек
+				</span>
+		    }
+	</div>
 
-        <label>Столбцы</label>
-        <input type="number" @bind="Cols" min="10" max="100" style="width: 60px; text-align: center;" />
 
-        <label>Мины</label>
-        <input type="number" @bind="Mines" min="15" max="2000" style="width: 60px; text-align: center;" />
+		<div style="display: flex; gap: 15px; margin-bottom: 10px; align-items: center; flex-wrap: wrap;">
+			<label>Строки</label>
+			<input type="number" @bind="Rows" min="10" max="100" style="width: 60px; text-align: center;" />
 
-        <button @onclick="StartGame" style="cursor: pointer;">Старт</button>
-        <button @onclick="RestartGame" style="cursor: pointer;">Рестарт</button>
-    </div>
+			<label>Столбцы</label>
+			<input type="number" @bind="Cols" min="10" max="100" style="width: 60px; text-align: center;" />
 
-    <div style="display: flex; gap: 20px; margin-bottom: 10px; font-weight: bold; color: #333;">
-        <span>Статус: @(gameState.IsWon ? "Победа!" : (gameState.IsGameOver ? "Поражение" : "Игра идет"))</span>
-        <span>Осталось мин : @CalculateMines()</span>
-    </div>
+			<label>Мины</label>
+			<input type="number" @bind="Mines" min="15" max="2000" style="width: 60px; text-align: center;" />
 
-    <!-- Сетка теперь будет строиться ровно благодаря minmax в GetGridStyle -->
-    <div style="@GetGridStyle()" class="game-board">
-        @foreach (var row in gameState.Grid)
-        {
-            @foreach (var cell in row)
-            {
-                <div @onclick="() => HandleClick(cell.Row, cell.Col, false)"
-                     @oncontextmenu="e => { HandleRightClick(e, cell.Row, cell.Col); }"
-                     style="@GetCellStyle(cell)"
-                     class="@(cell.IsRevealed && cell.IsMine ? "cell-mine-active" : "")">
+			<button @onclick="StartGame" style="cursor: pointer;">Старт</button>
+			<button @onclick="RestartGame" style="cursor: pointer;">Рестарт</button>
+		</div>
 
-                    @if (cell.IsRevealed)
-                    {
-                        @if (cell.IsMine)
-                        {
-                            <span style="font-size: 12px; background-color: red">💣</span>
-                        }
-                        else if (cell.NeighborCount > 0)
-                        {
-                            <span style="color: @GetNumberColor(cell.NeighborCount); font-weight: bold;">@cell.NeighborCount</span>
-                        }
-                    }
-                    else if (cell.IsFlagged)
-                    {
-                        <span style="font-size: 12px;">🚩</span>
-                    }
-                    else if (gameState.IsGameOver && !gameState.IsWon && cell.IsMine)
-                    {
-                        <span style="font-size: 12px; color: red;">💣</span>
-                    }
-                </div>
-            }
-        }
-    </div>
-}
+		<div style="display: flex; gap: 20px; margin-bottom: 10px; font-weight: bold; color: #333;">
+			<span>Статус: @(gameState.IsWon ? "Победа!" : (gameState.IsGameOver ? "Поражение" : "Игра идет"))</span>
+			<span>Осталось мин : @CalculateMines()</span>
+		</div>
 
-@if (!string.IsNullOrEmpty(errorMessage))
-{
-    <div style="color: red; margin-top: 10px; padding: 10px; background: #ffe6e6; border: solid 1px red;">
-        Error: @errorMessage
-        <button @onclick="ClearError" style="margin-left: 10px; cursor: pointer;">OK</button>
-    </div>
-}
+		<!-- Сетка теперь будет строиться ровно благодаря minmax в GetGridStyle -->
+		<div style="@GetGridStyle()" class="game-board">
+			@foreach (var row in gameState.Grid)
+			{
+				@foreach (var cell in row)
+				{
+					<div @onclick="() => HandleClick(cell.Row, cell.Col, false)"
+						 @oncontextmenu="e => { HandleRightClick(e, cell.Row, cell.Col); }"
+						 style="@GetCellStyle(cell)"
+						 class="@(cell.IsRevealed && cell.IsMine ? "cell-mine-active" : "")">
 
-<script>
-    (function() {
-        document.addEventListener('contextmenu', function(event) {
-            var target = event.target;
-            while (target && target !== document.body) {
-                if (target.classList && target.classList.contains('game-board')) {
-                    event.preventDefault();
-                    return; 
-                }
-                target = target.parentNode;
-            }
-        }, true); 
-    })();
-</script>
+						@if (cell.IsRevealed)
+						{
+							@if (cell.IsMine)
+							{
+								<span style="font-size: 12px; background-color: red">💣</span>
+							}
+							else if (cell.NeighborCount > 0)
+							{
+								<span style="color: @GetNumberColor(cell.NeighborCount); font-weight: bold;">@cell.NeighborCount</span>
+							}
+						}
+						else if (cell.IsFlagged)
+						{
+							<span style="font-size: 12px;">🚩</span>
+						}
+						else if (gameState.IsGameOver && !gameState.IsWon && cell.IsMine)
+						{
+							<span style="font-size: 12px; color: red;">💣</span>
+						}
+					</div>
+				}
+			}
+		</div>
+		}
+
+		@if (!string.IsNullOrEmpty(errorMessage))
+		{
+			<div style="color: red; margin-top: 10px; padding: 10px; background: #ffe6e6; border: solid 1px red;">
+				Error: @errorMessage
+				<button @onclick="ClearError" style="margin-left: 10px; cursor: pointer;">OK</button>
+			</div>
+		}
+
+		<Blazor.Components.Pages.Leaderboard />
+
+		<script>
+			(function() {
+			    document.addEventListener('contextmenu', function(event) {
+			        var target = event.target;
+			        while (target && target !== document.body) {
+			            if (target.classList && target.classList.contains('game-board')) {
+			                event.preventDefault();
+			                return;
+			            }
+			            target = target.parentNode;
+			        }
+			    }, true);
+			})();
+		</script>

@@ -1,0 +1,65 @@
+﻿@page "/leaderboard"
+@using Blazor.Services
+@using Blazor.Models
+@inject MinesweeperService Service
+@rendermode InteractiveServer
+
+<PageTitle>Рекорды — Сапёр</PageTitle>
+
+<h3>Таблица рекордов</h3>
+
+<div class="d-flex gap-2 mb-3 flex-wrap">
+	<button class="btn btn-outline-primary @(_activeTab == "today" ? "bg-primary text-white" : "")"
+			@onclick='() => SwitchTab("today")'>
+		За сегодня
+	</button>
+	<button class="btn btn-outline-primary @(_activeTab == "week" ? "bg-primary text-white" : "")"
+			@onclick='() => SwitchTab("week")'>
+		За неделю
+	</button>
+	<button class="btn btn-outline-primary @(_activeTab == "month" ? "bg-primary text-white" : "")"
+			@onclick='() => SwitchTab("month")'>
+		За месяц
+	</button>
+	<button class="btn btn-outline-primary @(_activeTab == "all" ? "bg-primary text-white" : "")"
+			@onclick='() => SwitchTab("all")'>
+		Все рекорды
+	</button>
+</div>
+
+@if (_loading)
+{
+	<div class="alert alert-info d-flex align-items-center">
+		<span class="spinner-border spinner-border-sm me-2"></span> Загрузка...
+	</div>
+}
+else if (_results == null || !_results.Any())
+{
+	<div class="text-center py-4 text-muted">Пока нет рекордов</div>
+}
+else
+{
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Игрок</th>
+				<th class="text-end">Время (сек)</th>
+				<th>Дата</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var r in _results.Select((x, i) => new { x, i }))
+			{
+				<tr>
+					<td>@(r.i + 1)</td>
+					<td>@r.x.PlayerName</td>
+					<td class="text-end fw-bold">@r.x.Seconds</td>
+					<td>@r.x.CreatedAt.ToLocalTime().ToString("dd.MM HH:mm")</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+

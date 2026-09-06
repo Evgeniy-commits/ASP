@@ -1,13 +1,17 @@
 ﻿using Blazor.Models;
+using Blazor.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Blazor.Pages
 {
 	public partial class Minesweeper : ComponentBase
 	{
 		[Inject] IHttpClientFactory ClientFactory { get; set; } = default!;
+		[Inject] MinesweeperService ResultService { get; set; } = default!;
+
 
 		HttpClient _httpClient = default!;
 
@@ -15,9 +19,15 @@ namespace Blazor.Pages
 		bool isLoading = false;
 		string errorMessage = "";
 
-		int Rows = 10;
-		int Cols = 10;
-		int Mines = 15;
+		int Rows = 15;
+		int Cols = 15;
+		int Mines = 50;
+
+		//Новые поля для рекордов
+		string playerName = "";
+		Stopwatch stopwatch = new ();
+		bool resultSaved = false;
+		int elapsedSeconds = 0;
 
 		protected override void OnInitialized()
 		{
@@ -33,15 +43,19 @@ namespace Blazor.Pages
 
 			try
 			{
-				var response = await _httpClient.PostAsJsonAsync("api/game/start", request);
+				HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/game/start", request);
 
 				if (!response.IsSuccessStatusCode)
 				{
-					var content = await response.Content.ReadAsStringAsync();
+					string content = await response.Content.ReadAsStringAsync();
 					throw new Exception($"API error: {response.StatusCode} - {content}");
 				}
 
 				gameState = await response.Content.ReadFromJsonAsync<GameStateResponse>();
+
+				//Запускаем новый таймер
+				stopwatch.Restart();
+				resultSaved = false;
 				StateHasChanged();
 			}
 			catch (HttpRequestException ex)
@@ -74,6 +88,10 @@ namespace Blazor.Pages
 
 				HttpResponseMessage response = await _httpClient.PostAsJsonAsync("api/game/restart", new { });
 				gameState = await response.Content.ReadFromJsonAsync<GameStateResponse>();
+
+				stopwatch.Restart();
+				resultSaved = false;
+
 				StateHasChanged();
 			}
 			catch (Exception ex)
@@ -91,6 +109,23 @@ namespace Blazor.Pages
 			try
 			{
 				gameState = await _httpClient.GetFromJsonAsync<GameStateResponse>("api/game/state");
+				if (gameState != null && gameState.IsWon && !resultSaved)
+				{
+					stopwatch.Stop();
+					elapsedSeconds = (int)stopwatch.Elapsed.TotalSeconds;
+					resultSaved = true;
+
+					string name = string.IsNullOrWhiteSpace(playerName) ? "Аноним" : playerName;
+					try
+					{
+						await ResultService.SaveResultAsync(name, elapsedSeconds);
+						Console.WriteLine($"Результат сохранен: {name}, {elapsedSeconds} сек.");
+					}
+					catch (Exception ex)
+					{
+						Console.WriteLine($"Ошибка сохранения рекорда: {ex.Message}");
+					}
+				}
 				StateHasChanged();
 			}
 			catch (Exception ex)
