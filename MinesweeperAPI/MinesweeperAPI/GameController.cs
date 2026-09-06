@@ -6,9 +6,9 @@ using MinesweeperAPI.Models;
 namespace MinesweeperAPI.Controllers
 {
 	[ApiController]
-	[Route("api/api/game")]
+    [Route("api/[controller]")]
 
-	public class GameController : ControllerBase
+    public class GameController : ControllerBase
 	{
 		//Состояние игры в памяти
 		private static GameModel? _game;
