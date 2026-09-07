@@ -8,6 +8,5 @@ namespace Movies.Models
         public string Title { get; set; }
         public DateOnly ReleaseDate { get; set; }
         public string Genre { get; set; }
-
     }
 }
