@@ -30,6 +30,11 @@
                 <InputText id="genre" @bind-Value="Movie.Genre" class="form-control" /> 
                 <ValidationMessage For="() => Movie.Genre" class="text-danger" /> 
             </div>        
+            <div class="mb-3">
+                <label for="URL" class="form-label">URL:</label> 
+                <InputText id="URL" @bind-Value="Movie.URL" class="form-control" /> 
+                <ValidationMessage For="() => Movie.URL" class="text-danger" /> 
+            </div>        
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>

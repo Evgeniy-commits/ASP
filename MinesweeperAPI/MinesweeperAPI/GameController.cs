@@ -95,30 +95,5 @@ namespace MinesweeperAPI.Controllers
 			_game.Restart();
 			return GetState();
 		}
-
-		//public class StartGameRequest
-		//{
-		//	public int Rows { get; set; }
-		//	public int Cols { get; set; }
-		//	public int Mines { get; set; }
-		//}
-
-		//public class CoordinateRequest
-		//{
-		//	public int Row { get; set; }
-		//	public int Col { get; set; }
-		//}
-
-		//public class CellStateDto
-		//{
-		//	public int Row { get; set; }
-		//	public int Col { get; set; }
-		//	public bool IsRevealed { get; set; }
-		//	public bool IsFlagged { get; set; }
-		//	public bool IsMine { get; set; }
-		//	public int NeighborCount { get; set; }
-		//	public bool IsGameOver { get; set; }
-		//	public bool IsWon {  get; set; }
-		//}
 	}
 }
