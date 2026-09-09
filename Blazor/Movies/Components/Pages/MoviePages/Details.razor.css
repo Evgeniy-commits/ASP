@@ -1,0 +1,16 @@
+﻿.details-container
+{
+    display:flex;
+}
+
+dt 
+{
+    float: left;
+    width: 30%;
+}
+
+dd
+{
+    /*border: solid 1px;*/
+    width:50%;
+}
