@@ -15,13 +15,21 @@
     <a href="movies/create">Create New</a>
 </p>
 
-<label for="items-per-page">Items per page</label>
-<select id="item-per-page" @bind="pagination.ItemsPerPage">
-    <option value="3">3</option>
-    <option value="5">5</option>
-    <option value="8">8</option>
-    <option value="10">10</option>
-</select>
+<div class="control">
+	<form action="/movies">
+		<input type="search" name="titleFilter" />
+		<input type="submit" name="Поиск" class="btn btn-primary" />
+	</form>
+	<div>
+		<label for="items-per-page">Items per page</label>
+		<select id="item-per-page" @bind="pagination.ItemsPerPage">
+			<option value="3">3</option>
+			<option value="5">5</option>
+			<option value="8">8</option>
+			<option value="10">10</option>
+		</select>
+	</div>
+</div>
 
 <div>
 	<QuickGrid Class="table" Items="context.Movie" Pagination="pagination">
@@ -39,13 +47,18 @@
 	<Paginator State="pagination" />
 </div>
 @code {
-    private MoviesContext context = default!;
+	private MoviesContext context = default!;
 
-    PaginationState pagination = new PaginationState { ItemsPerPage = 3 };
-    protected override void OnInitialized()
-    {
-        context = DbFactory.CreateDbContext();
-    }
+	[SupplyParameterFromQuery]
+	string? TitleFilter { get; set; }
+	IQueryable<Movie> FilteredMovies =>
+			context.Movie.Where(m => m.Title.Contains(TitleFilter ?? string.Empty));
 
-    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+	PaginationState pagination = new PaginationState { ItemsPerPage = 3 };
+	protected override void OnInitialized()
+	{
+		context = DbFactory.CreateDbContext();
+	}
+
+	public async ValueTask DisposeAsync() => await context.DisposeAsync();
 }

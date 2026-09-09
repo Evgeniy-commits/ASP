@@ -1,4 +1,15 @@
-﻿::deep .movie-title
+﻿.control
+{
+    display:flex;
+    justify-content:space-between;
+    align-items: center;
+}
+/*.controls *
+{
+    height:38px;
+}*/
+
+::deep .movie-title
 {
     width:50%;
 }
