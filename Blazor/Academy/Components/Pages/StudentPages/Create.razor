@@ -1,0 +1,120 @@
+@page "/students/create"
+@using Microsoft.EntityFrameworkCore
+@using Academy.Models
+@inject IDbContextFactory<Academy.Models.PV_521_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h2>Student</h2>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+		<EditForm method="post" Model="Student" OnValidSubmit="AddStudent" FormName="create" Enhance>
+			<DataAnnotationsValidator />
+			<ValidationSummary class="text-danger" role="alert" />
+			<div class="mb-3">
+				<span class="text-danger">*</span>
+				<label for="lastname" class="form-label">LastName:</label>
+				<InputText id="lastname" @bind-Value="Student.LastName" class="form-control" aria-required="true" />
+				<ValidationMessage For="() => Student.LastName" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<span class="text-danger">*</span>
+				<label for="firstname" class="form-label">FirstName:</label>
+				<InputText id="firstname" @bind-Value="Student.FirstName" class="form-control" aria-required="true" />
+				<ValidationMessage For="() => Student.FirstName" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="middlename" class="form-label">MiddleName:</label>
+				<InputText id="middlename" @bind-Value="Student.MiddleName" class="form-control" />
+				<ValidationMessage For="() => Student.MiddleName" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="birthdate" class="form-label">BirthDate:</label>
+				<InputDate id="birthdate" @bind-Value="Student.BirthDate" class="form-control" />
+				<ValidationMessage For="() => Student.BirthDate" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="email" class="form-label">Email:</label>
+				<InputText id="email" @bind-Value="Student.Email" class="form-control" />
+				<ValidationMessage For="() => Student.Email" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="phone" class="form-label">Phone:</label>
+				<InputText id="phone" @bind-Value="Student.Phone" class="form-control" />
+				<ValidationMessage For="() => Student.Phone" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="photo" class="form-label">Photo:</label>
+				<InputFile id="photo" @bind-Value="Student.Photo" class="form-control" />
+				<ValidationMessage For="() => Student.Photo" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="group" class="form-label">Group:</label>
+				<InputNumber id="group" @bind-Value="Student.Group" class="form-control" />
+				<ValidationMessage For="() => Student.Group" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="groupnavigation" class="form-label">GroupNavigation:</label>
+				<InputSelect id="groupnavigation" @bind-Value="Student.GroupNavigation" class="form-control" >
+					<option value="">Ч выберите группу Ч</option>
+					@if (Groups != null)
+					{
+						foreach (var g in Groups)
+						{
+							<option value="@g.GroupId">@g.GroupName</option>
+						}
+					}
+				</InputSelect>
+			<ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
+</div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/students">Back to List</a>
+</div>
+
+@code 
+{
+	[SupplyParameterFromForm]
+	private List<Group>? Groups { get; set; }
+	private Student Student { get; set; } = new();
+
+	protected override void OnInitialized() => Student ??= new();
+
+	private async Task AddStudent()
+	{
+		using var context = DbFactory.CreateDbContext();
+		context.Students.Add(Student);
+		await context.SaveChangesAsync();
+		NavigationManager.NavigateTo("/students");
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		// —оздаЄм контекст через фабрику и сразу освобождаем его
+		await using var context = DbFactory.CreateDbContext();
+
+		Groups = await context.Groups
+			.OrderBy(g => g.GroupName)
+			.ToListAsync();
+	}
+
+	private async Task HandleValidSubmit()
+	{
+		await using var context = DbFactory.CreateDbContext();
+
+		// ¬ј∆Ќќ: сохран€ем именно ID группы, а не объект Group
+		// ≈сли в вашей модели поле называетс€ иначе (например, GroupRef), замените Student.GroupId
+		context.Students.Add(Student);
+		await context.SaveChangesAsync();
+
+		NavigationManager.NavigateTo("/students");
+	}
+}

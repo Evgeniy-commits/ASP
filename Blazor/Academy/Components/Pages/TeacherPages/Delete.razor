@@ -1,0 +1,87 @@
+@page "/teachers/delete"
+@using Microsoft.EntityFrameworkCore
+@using Academy.Models
+@inject IDbContextFactory<Academy.Models.PV_521_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<p>Are you sure you want to delete this?</p>
+<div>
+    <h2>Teacher</h2>
+    <hr />
+    @if (teacher is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">LastName</dt>
+            <dd class="col-sm-10">@teacher.LastName</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">FirstName</dt>
+            <dd class="col-sm-10">@teacher.FirstName</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">MiddleName</dt>
+            <dd class="col-sm-10">@teacher.MiddleName</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">BirthDate</dt>
+            <dd class="col-sm-10">@teacher.BirthDate</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Email</dt>
+            <dd class="col-sm-10">@teacher.Email</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Phone</dt>
+            <dd class="col-sm-10">@teacher.Phone</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Photo</dt>
+            <dd class="col-sm-10">@teacher.Photo</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">WorkSince</dt>
+            <dd class="col-sm-10">@teacher.WorkSince</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Rate</dt>
+            <dd class="col-sm-10">@teacher.Rate</dd>
+        </dl>
+        <EditForm method="post" Model="teacher" OnValidSubmit="DeleteTeacher" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(teacher is null)">Delete</button> |
+            <a href="/teachers">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    private Teacher? teacher;
+
+    [SupplyParameterFromQuery]
+    private short TeacherId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        teacher = await context.Teachers.FirstOrDefaultAsync(m => m.TeacherId == TeacherId);
+
+        if (teacher is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    private async Task DeleteTeacher()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Teachers.Remove(teacher!);
+        await context.SaveChangesAsync();
+        NavigationManager.NavigateTo("/teachers");
+    }
+}

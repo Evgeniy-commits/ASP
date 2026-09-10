@@ -1,0 +1,44 @@
+@page "/students"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using Academy.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<Academy.Models.PV_521_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="students/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Students">
+    <PropertyColumn Property="student => student.LastName" />
+    <PropertyColumn Property="student => student.FirstName" />
+    <PropertyColumn Property="student => student.MiddleName" />
+    <PropertyColumn Property="student => student.BirthDate" />
+    <PropertyColumn Property="student => student.Email" />
+    <PropertyColumn Property="student => student.Phone" />
+    <PropertyColumn Property="student => student.Photo" />
+    <PropertyColumn Property="student => student.Group" />
+    @*<PropertyColumn Property="student => student.GroupNavigation" />*@
+
+    <TemplateColumn Context="student">
+        <a href="@($"students/edit?studid={student.StudId}")">Edit</a> |
+        <a href="@($"students/details?studid={student.StudId}")">Details</a> |
+        <a href="@($"students/delete?studid={student.StudId}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private PV_521_ImportContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

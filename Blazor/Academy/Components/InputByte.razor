@@ -1,0 +1,34 @@
+﻿@inherits InputBase<byte>
+
+<input
+	value="@CurrentValueAsString"
+	@onchange="@( e => CurrentValueAsString = e.Value?.ToString())"
+	class="@CssClass"
+	@attributes="AdditionalAttributes" />
+
+@code 
+{
+	protected override string? FormatValueAsString(byte value)
+	{
+		return value.ToString();
+	}
+
+	protected override bool TryParseValueFromString(string? value, out byte result, out string validationErrorMessage)
+	{
+		if (string.IsNullOrWhiteSpace(value))
+		{
+			result = 0;
+			validationErrorMessage = "";
+			return true;
+		}
+
+		if (byte.TryParse(value, out result))
+		{
+			validationErrorMessage = "";
+			return true;
+		}
+
+		validationErrorMessage = "Введите число от 0 до 255.";
+		return false;
+	}
+}

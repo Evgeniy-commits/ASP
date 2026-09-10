@@ -1,0 +1,38 @@
+@page "/disciplines"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using Academy.Models
+@using Academy.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<Academy.Models.PV_521_ImportContext> DbFactory
+@inject NavigationManager NavigationManager
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="disciplines/create">Create New</a>
+</p>
+
+<QuickGrid Class="table" Items="context.Disciplines">
+    <PropertyColumn Property="discipline => discipline.DisciplineName" />
+    <PropertyColumn Property="discipline => discipline.NumberOfLessons" />
+
+    <TemplateColumn Context="discipline">
+        <a href="@($"disciplines/edit?disciplineid={discipline.DisciplineId}")">Edit</a> |
+        <a href="@($"disciplines/details?disciplineid={discipline.DisciplineId}")">Details</a> |
+        <a href="@($"disciplines/delete?disciplineid={discipline.DisciplineId}")">Delete</a>
+    </TemplateColumn>
+</QuickGrid>
+
+@code {
+    private PV_521_ImportContext context = default!;
+
+    protected override void OnInitialized()
+    {
+        context = DbFactory.CreateDbContext();
+    }
+
+    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}
