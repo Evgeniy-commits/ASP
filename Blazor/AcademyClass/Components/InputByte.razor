@@ -1,0 +1,45 @@
+﻿@inherits InputBase<byte>
+
+@*  value="@CurrentValueAsString" — отображает текущее значение как строку. 
+	CurrentValueAsString — свойство из InputBase, которое хранит строковое представление значения.
+	@onchange="..." — событие изменения поля. При вводе текста обновляет CurrentValueAsString. Это нужно, чтобы InputBase мог потом распарсить строку в byte.
+	class="@CssClass" — применяет CSS-классы, которые передаются через параметр class на компоненте (например, class="form-control").
+	@attributes="AdditionalAttributes" — все остальные атрибуты (placeholder, min, max, disabled и т.д.) собираются в словарь и применяются к
+	<input>. Это позволяет использовать компонент как обычный <input> с любыми дополнительными параметрами.*@
+<input value="@CurrentValueAsString"
+	   @onchange="@( e => CurrentValueAsString = e.Value?.ToString())"
+	   class="@CssClass"
+	   @attributes="AdditionalAttributes" />
+
+@code
+{
+	//Переопределяет метод базового класса.
+	//Преобразует значение byte в строку для отображения в поле ввода.
+	//Вызывается автоматически, когда значение модели меняется извне (например, при инициализации формы).
+	protected override string? FormatValueAsString(byte value)
+	{
+		return value.ToString();
+	}
+
+	//Пустое значение.Если пользователь стёр всё из поля, считаем это валидным и устанавливаем значение 0. Ошибки нет.
+	//Успешный парсинг. Если строка успешно преобразуется в byte (то есть число в диапазоне 0–255), возвращаем true и очищаем сообщение об ошибке.
+	//Ошибка.Если строка не является корректным byte (например, «abc», «-1», «300»), возвращаем false и задаём понятное сообщение: «Введите число от 0 до 255.».
+	protected override bool TryParseValueFromString(string? value, out byte result, out string validationErrorMessage)
+	{
+		if (string.IsNullOrWhiteSpace(value))
+		{
+			result = 0;
+			validationErrorMessage = "";
+			return true;
+		}
+
+		if (byte.TryParse(value, out result))
+		{
+			validationErrorMessage = "";
+			return true;
+		}
+
+		validationErrorMessage = "Введите число от 0 до 255.";
+		return false;
+	}
+}
