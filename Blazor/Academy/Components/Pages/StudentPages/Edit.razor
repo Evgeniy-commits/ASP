@@ -1,7 +1,7 @@
 @page "/students/edit"
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
-@inject IDbContextFactory<Academy.Models.PV_521_ImportContext> DbFactory
+@inject IDbContextFactory<PV_521_ImportContext> DbFactory
 @inject NavigationManager NavigationManager
 
 <PageTitle>Edit</PageTitle>
@@ -18,59 +18,74 @@ else
 {
     <div class="row">
         <div class="col-md-4">
-            <EditForm method="post" Model="Student" OnValidSubmit="UpdateStudent" FormName="edit" Enhance>
-                <DataAnnotationsValidator />
-                <ValidationSummary role="alert"/>
-                <input type="hidden" name="Student.StudId" value="@Student.StudId" />
-                <div class="mb-3">
-                <span class="text-danger">*</span>
-                    <label for="lastname" class="form-label">LastName:</label>
-                    <InputText id="lastname" @bind-Value="Student.LastName" class="form-control" aria-required="true"/>
-                    <ValidationMessage For="() => Student.LastName" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                <span class="text-danger">*</span>
-                    <label for="firstname" class="form-label">FirstName:</label>
-                    <InputText id="firstname" @bind-Value="Student.FirstName" class="form-control" aria-required="true"/>
-                    <ValidationMessage For="() => Student.FirstName" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="middlename" class="form-label">MiddleName:</label>
-                    <InputText id="middlename" @bind-Value="Student.MiddleName" class="form-control" />
-                    <ValidationMessage For="() => Student.MiddleName" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="birthdate" class="form-label">BirthDate:</label>
-                    <InputDate id="birthdate" @bind-Value="Student.BirthDate" class="form-control" />
-                    <ValidationMessage For="() => Student.BirthDate" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email:</label>
-                    <InputText id="email" @bind-Value="Student.Email" class="form-control" />
-                    <ValidationMessage For="() => Student.Email" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Phone:</label>
-                    <InputText id="phone" @bind-Value="Student.Phone" class="form-control" />
-                    <ValidationMessage For="() => Student.Phone" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="photo" class="form-label">Photo:</label>
-                    <InputFile id="photo" @bind-Value="Student.Photo" class="form-control" />
-                    <ValidationMessage For="() => Student.Photo" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="group" class="form-label">Group:</label>
-                    <InputNumber id="group" @bind-Value="Student.Group" class="form-control" />
-                    <ValidationMessage For="() => Student.Group" class="text-danger" />
-                </div>
-                @*<div class="mb-3">
-                    <label for="groupnavigation" class="form-label">GroupNavigation:</label>
-                    <InputNumber id="groupnavigation" @bind-Value="Student.GroupNavigation" class="form-control" />
-                    <ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
-                </div>*@
-                <button type="submit" class="btn btn-primary">Save</button>
-            </EditForm>
+			<EditForm method="post" Model="Student" OnValidSubmit="UpdateStudent" FormName="edit" Enhance>
+				<DataAnnotationsValidator />
+				<ValidationSummary role="alert" />
+				<input type="hidden" name="Student.StudId" value="@Student.StudId" />
+				<div class="mb-3">
+					<span class="text-danger">*</span>
+					<label for="lastname" class="form-label">LastName:</label>
+					<InputText id="lastname" @bind-Value="Student.LastName" class="form-control" aria-required="true" />
+					<ValidationMessage For="() => Student.LastName" class="text-danger" />
+				</div>
+				<div class="mb-3">
+					<span class="text-danger">*</span>
+					<label for="firstname" class="form-label">FirstName:</label>
+					<InputText id="firstname" @bind-Value="Student.FirstName" class="form-control" aria-required="true" />
+					<ValidationMessage For="() => Student.FirstName" class="text-danger" />
+				</div>
+				<div class="mb-3">
+					<label for="middlename" class="form-label">MiddleName:</label>
+					<InputText id="middlename" @bind-Value="Student.MiddleName" class="form-control" />
+					<ValidationMessage For="() => Student.MiddleName" class="text-danger" />
+				</div>
+				<div class="mb-3">
+					<label for="birthdate" class="form-label">BirthDate:</label>
+					<InputDate id="birthdate" @bind-Value="Student.BirthDate" class="form-control" />
+					<ValidationMessage For="() => Student.BirthDate" class="text-danger" />
+				</div>
+				<div class="mb-3">
+					<label for="email" class="form-label">Email:</label>
+					<InputText id="email" @bind-Value="Student.Email" class="form-control" />
+					<ValidationMessage For="() => Student.Email" class="text-danger" />
+				</div>
+				<div class="mb-3">
+					<label for="phone" class="form-label">Phone:</label>
+					<InputText id="phone" @bind-Value="Student.Phone" class="form-control" />
+					<ValidationMessage For="() => Student.Phone" class="text-danger" />
+				</div>
+				<div class="mb-3">
+					<label for="photo" class="form-label">Photo:</label>
+					<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
+					<ValidationMessage For="() => Student.Photo" class="text-danger" />
+				</div>
+				<div class="mb-3">
+					<label for="group" class="form-label">Group:</label>
+					<InputNumber id="group" @bind-Value="Student.Group" class="form-control" />
+					<ValidationMessage For="() => Student.Group" class="text-danger" />
+				</div>
+
+				<div class="mb-3">
+					<label for="group" class="form-label">Group:</label>
+					<InputSelect id="group" @bind-Value="Student.Group" class="form-control">
+						<option value="">Ч выберите группу Ч</option>
+						@if (Groups != null)
+						{
+							foreach (var g in Groups)
+							{
+								<option value="@g.GroupId">@g.GroupName</option>
+							}
+						}
+					</InputSelect>
+					<ValidationMessage For="() => Student.Group" class="text-danger" />
+				</div>
+				@*<div class="mb-3">
+		<label for="groupnavigation" class="form-label">GroupNavigation:</label>
+		<InputNumber id="groupnavigation" @bind-Value="Student.GroupNavigation" class="form-control" />
+		<ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
+		</div>*@
+				<button type="submit" class="btn btn-primary">Save</button>
+			</EditForm>
         </div>
     </div>
 }
@@ -80,52 +95,45 @@ else
 </div>
 
 @code {
-    [SupplyParameterFromQuery]
-    private int StudId { get; set; }
 
-    [SupplyParameterFromForm]
-    private Student? Student { get; set; }
+	private List<Group>? Groups { get; set; }
+	private Student? Student { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        using var context = DbFactory.CreateDbContext();
-        Student ??= await context.Students.FirstOrDefaultAsync(m => m.StudId == StudId);
+	[SupplyParameterFromQuery]
+	private int StudId { get; set; }
 
-        if (Student is null)
-        {
-            NavigationManager.NavigateTo("notfound");
-        }
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		using var context = DbFactory.CreateDbContext();
+		Student = await context.Students.FirstOrDefaultAsync(m => m.StudId == StudId);
 
-    // To protect from overposting attacks, enable the specific properties you want to bind to.
-    // For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task UpdateStudent()
-    {
-        using var context = DbFactory.CreateDbContext();
-        context.Attach(Student!).State = EntityState.Modified;
+		// «агружаем список групп дл€ выпадающего списка
+		Groups = await context.Groups.OrderBy(g => g.GroupName).ToListAsync();
 
-        try
-        {
-            await context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!StudentExists(Student!.StudId))
-            {
-                NavigationManager.NavigateTo("notfound");
-            }
-            else
-            {
-                throw;
-            }
-        }
+		if (Student is null)
+		{
+			NavigationManager.NavigateTo("notfound");
+			return;
+		}
+	}
 
-        NavigationManager.NavigateTo("/students");
-    }
+	private async Task OnPhotoSelected(InputFileChangeEventArgs e)
+	{
+		var file = e.File;
+		if (file != null && file.Size > 0)
+		{
+			using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+			using var ms = new MemoryStream();
+			await stream.CopyToAsync(ms);
+			Student!.Photo = ms.ToArray();
+		}
+	}
 
-    private bool StudentExists(int studid)
-    {
-        using var context = DbFactory.CreateDbContext();
-        return context.Students.Any(e => e.StudId == studid);
-    }
+	private async Task UpdateStudent()
+	{
+		await using var context = DbFactory.CreateDbContext();
+		context.Attach(Student!).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+		await context.SaveChangesAsync();
+		NavigationManager.NavigateTo("/students");
+	}
 }

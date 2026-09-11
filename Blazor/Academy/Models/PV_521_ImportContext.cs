@@ -21,6 +21,8 @@ public partial class PV_521_ImportContext : DbContext
 
     public virtual DbSet<Teacher> Teachers { get; set; }
 
+    public virtual DbSet<Direction> Directions { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Discipline>(entity =>
@@ -44,6 +46,16 @@ public partial class PV_521_ImportContext : DbContext
         modelBuilder.Entity<Teacher>(entity =>
         {
             entity.Property(e => e.Phone).IsFixedLength();
+        });
+
+        modelBuilder.Entity<Direction>(entity =>
+        {
+            entity.HasKey(e => e.DirectionId);
+            entity.ToTable("Directions");
+            entity.Property(e => e.DirectionId).HasColumnName("direction_id");
+            entity.Property(e => e.DirectionName)
+                .HasColumnName("direction_name")
+                .HasMaxLength(50);
         });
 
         OnModelCreatingPartial(modelBuilder);

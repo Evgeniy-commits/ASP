@@ -1,8 +1,9 @@
 @page "/teachers/create"
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
-@inject IDbContextFactory<Academy.Models.PV_521_ImportContext> DbFactory
+@inject IDbContextFactory<PV_521_ImportContext> DbFactory
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Create</PageTitle>
 
@@ -11,76 +12,88 @@
 <h2>Teacher</h2>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <EditForm method="post" Model="Teacher" OnValidSubmit="AddTeacher" FormName="create" Enhance>
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <label for="lastname" class="form-label">LastName:</label> 
-                <InputText id="lastname" @bind-Value="Teacher.LastName" class="form-control" /> 
-                <ValidationMessage For="() => Teacher.LastName" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="firstname" class="form-label">FirstName:</label> 
-                <InputText id="firstname" @bind-Value="Teacher.FirstName" class="form-control" /> 
-                <ValidationMessage For="() => Teacher.FirstName" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="middlename" class="form-label">MiddleName:</label> 
-                <InputText id="middlename" @bind-Value="Teacher.MiddleName" class="form-control" /> 
-                <ValidationMessage For="() => Teacher.MiddleName" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="birthdate" class="form-label">BirthDate:</label> 
-                <InputDate id="birthdate" @bind-Value="Teacher.BirthDate" class="form-control" /> 
-                <ValidationMessage For="() => Teacher.BirthDate" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="email" class="form-label">Email:</label> 
-                <InputText id="email" @bind-Value="Teacher.Email" class="form-control" /> 
-                <ValidationMessage For="() => Teacher.Email" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="phone" class="form-label">Phone:</label> 
-                <InputText id="phone" @bind-Value="Teacher.Phone" class="form-control" /> 
-                <ValidationMessage For="() => Teacher.Phone" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="photo" class="form-label">Photo:</label> 
-                <InputNumber id="photo" @bind-Value="Teacher.Photo" class="form-control" /> 
-                <ValidationMessage For="() => Teacher.Photo" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="worksince" class="form-label">WorkSince:</label> 
-                <InputDate id="worksince" @bind-Value="Teacher.WorkSince" class="form-control" /> 
-                <ValidationMessage For="() => Teacher.WorkSince" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="rate" class="form-label">Rate:</label> 
-                <InputNumber id="rate" @bind-Value="Teacher.Rate" class="form-control" /> 
-                <ValidationMessage For="() => Teacher.Rate" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
-    </div>
+	<div class="col-md-4">
+		<EditForm method="post" Model="Teacher" OnValidSubmit="AddTeacher" FormName="create" Enhance>
+			<DataAnnotationsValidator />
+			<ValidationSummary class="text-danger" role="alert" />
+			<div class="mb-3">
+				<label for="lastname" class="form-label">LastName:</label>
+				<InputText id="lastname" @bind-Value="Teacher.LastName" class="form-control" />
+				<ValidationMessage For="() => Teacher.LastName" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="firstname" class="form-label">FirstName:</label>
+				<InputText id="firstname" @bind-Value="Teacher.FirstName" class="form-control" />
+				<ValidationMessage For="() => Teacher.FirstName" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="middlename" class="form-label">MiddleName:</label>
+				<InputText id="middlename" @bind-Value="Teacher.MiddleName" class="form-control" />
+				<ValidationMessage For="() => Teacher.MiddleName" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="birthdate" class="form-label">BirthDate:</label>
+				<InputDate id="birthdate" @bind-Value="Teacher.BirthDate" class="form-control" />
+				<ValidationMessage For="() => Teacher.BirthDate" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="email" class="form-label">Email:</label>
+				<InputText id="email" @bind-Value="Teacher.Email" class="form-control" />
+				<ValidationMessage For="() => Teacher.Email" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="phone" class="form-label">Phone:</label>
+				<InputText id="phone" @bind-Value="Teacher.Phone" class="form-control" />
+				<ValidationMessage For="() => Teacher.Phone" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="photo" class="form-label">Photo:</label>
+				<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
+				<ValidationMessage For="() => Teacher.Photo" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="worksince" class="form-label">WorkSince:</label>
+				<InputDate id="worksince" @bind-Value="Teacher.WorkSince" class="form-control" />
+				<ValidationMessage For="() => Teacher.WorkSince" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="rate" class="form-label">Rate:</label>
+				<InputNumber id="rate" @bind-Value="Teacher.Rate" class="form-control" />
+				<ValidationMessage For="() => Teacher.Rate" class="text-danger" />
+			</div>
+			<button type="submit" class="btn btn-primary">Create</button>
+		</EditForm>
+	</div>
 </div>
 
 <div>
-    <a href="/teachers">Back to List</a>
+	<a href="/teachers">Back to List</a>
 </div>
 
 @code {
-    [SupplyParameterFromForm]
-    private Teacher Teacher { get; set; } = default!;
+	[SupplyParameterFromForm]
+	private Teacher Teacher { get; set; } = default!;
 
-    protected override void OnInitialized() => Teacher ??= new();
+	protected override void OnInitialized() => Teacher ??= new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task AddTeacher()
-    {
-        using var context = DbFactory.CreateDbContext();
-        context.Teachers.Add(Teacher);
-        await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/teachers");
-    }
+	// To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+	private async Task AddTeacher()
+	{
+		using var context = DbFactory.CreateDbContext();
+		context.Teachers.Add(Teacher);
+		await context.SaveChangesAsync();
+		NavigationManager.NavigateTo("/teachers");
+	}
+
+	private async Task OnPhotoSelected(InputFileChangeEventArgs e)
+	{
+		var file = e.File;
+		if (file != null && file.Size > 0)
+		{
+			using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+			using var ms = new MemoryStream();
+			await stream.CopyToAsync(ms);
+			Teacher!.Photo = ms.ToArray();
+		}
+	}
 }

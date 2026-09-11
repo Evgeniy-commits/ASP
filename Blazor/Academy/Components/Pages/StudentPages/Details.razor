@@ -1,7 +1,7 @@
 @page "/students/details"
 @using Microsoft.EntityFrameworkCore
 @using Academy.Models
-@inject IDbContextFactory<Academy.Models.PV_521_ImportContext> DbFactory
+@inject IDbContextFactory<PV_521_ImportContext> DbFactory
 @inject NavigationManager NavigationManager
 
 <PageTitle>Details</PageTitle>
@@ -33,8 +33,8 @@
             <dd class="col-sm-10">@student.Photo</dd>
             <dt class="col-sm-2">Group</dt>
             <dd class="col-sm-10">@student.Group</dd>
-            <dt class="col-sm-2">GroupNavigation</dt>
-            <dd class="col-sm-10">@student.GroupNavigation</dd>
+            @*<dt class="col-sm-2">GroupNavigation</dt>
+            <dd class="col-sm-10">@student.GroupNavigation</dd>*@
         </dl>
         <div>
             <a href="@($"/students/edit?studid={student.StudId}")">Edit</a> |

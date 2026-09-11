@@ -11,7 +11,7 @@
 <h2>Student</h2>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+	<div class="col-md-4">
 		<EditForm method="post" Model="Student" OnValidSubmit="AddStudent" FormName="create" Enhance>
 			<DataAnnotationsValidator />
 			<ValidationSummary class="text-danger" role="alert" />
@@ -49,7 +49,7 @@
 			</div>
 			<div class="mb-3">
 				<label for="photo" class="form-label">Photo:</label>
-				<InputFile id="photo" @bind-Value="Student.Photo" class="form-control" />
+				<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
 				<ValidationMessage For="() => Student.Photo" class="text-danger" />
 			</div>
 			<div class="mb-3">
@@ -57,33 +57,32 @@
 				<InputNumber id="group" @bind-Value="Student.Group" class="form-control" />
 				<ValidationMessage For="() => Student.Group" class="text-danger" />
 			</div>
-			<div class="mb-3">
-				<label for="groupnavigation" class="form-label">GroupNavigation:</label>
-				<InputSelect id="groupnavigation" @bind-Value="Student.GroupNavigation" class="form-control" >
-					<option value="">Ч выберите группу Ч</option>
-					@if (Groups != null)
-					{
-						foreach (var g in Groups)
-						{
-							<option value="@g.GroupId">@g.GroupName</option>
-						}
-					}
-				</InputSelect>
-			<ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
-</div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
-    </div>
+			@*<div class="mb-3">
+					<label for="groupnavigation" class="form-label">GroupNavigation:</label>
+					<InputSelect id="groupnavigation" @bind-Value="Student.GroupNavigation" class="form-control" >
+						<option value="">Ч выберите группу Ч</option>
+							@if (Groups != null)
+							{
+								foreach (var g in Groups)
+								{
+									<option value="@g.GroupId">@g.GroupName</option>
+								}
+							}
+					</InputSelect>
+					<ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
+				</div>*@
+			<button type="submit" class="btn btn-primary">Create</button>
+		</EditForm>
+	</div>
 </div>
 
 <div>
-    <a href="/students">Back to List</a>
+	<a href="/students">Back to List</a>
 </div>
 
-@code 
+@code
 {
 	[SupplyParameterFromForm]
-	private List<Group>? Groups { get; set; }
 	private Student Student { get; set; } = new();
 
 	protected override void OnInitialized() => Student ??= new();
@@ -96,25 +95,23 @@
 		NavigationManager.NavigateTo("/students");
 	}
 
-	protected override async Task OnInitializedAsync()
+	private async Task OnPhotoSelected(InputFileChangeEventArgs e)
 	{
-		// —оздаЄм контекст через фабрику и сразу освобождаем его
-		await using var context = DbFactory.CreateDbContext();
-
-		Groups = await context.Groups
-			.OrderBy(g => g.GroupName)
-			.ToListAsync();
+		var file = e.File;
+		if (file != null && file.Size > 0)
+		{
+			using var stream = file.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+			using var ms = new MemoryStream();
+			await stream.CopyToAsync(ms);
+			Student!.Photo = ms.ToArray();
+		}
 	}
 
-	private async Task HandleValidSubmit()
+	private async Task UpdateStudent()
 	{
 		await using var context = DbFactory.CreateDbContext();
-
-		// ¬ј∆Ќќ: сохран€ем именно ID группы, а не объект Group
-		// ≈сли в вашей модели поле называетс€ иначе (например, GroupRef), замените Student.GroupId
-		context.Students.Add(Student);
+		context.Attach(Student!).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
 		await context.SaveChangesAsync();
-
 		NavigationManager.NavigateTo("/students");
 	}
 }
