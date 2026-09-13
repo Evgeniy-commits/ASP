@@ -1,5 +1,6 @@
 @page "/students/edit"
 @using Microsoft.EntityFrameworkCore
+@using Academy
 @using Academy.Models
 @inject IDbContextFactory<PV_521_ImportContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -18,7 +19,7 @@ else
 {
 	<div class="row">
 		<div class="col-md-4">
-			<EditForm method="post" Model="Student" OnValidSubmit="UpdateStudent" FormName="edit" Enhance>
+			<EditForm Model="Student" OnValidSubmit="UpdateStudent">
 				<DataAnnotationsValidator />
 				<ValidationSummary role="alert" />
 				<input type="hidden" name="Student.StudId" value="@Student.StudId" />
@@ -57,26 +58,48 @@ else
 
 				<div class="mb-3">
 					<label class="form-label">Photo:</label>
-					@if (Student.Photo != null && Student.Photo.Length > 0)
+					@{
+						var currentSrc = ImageHelper.ToBase64ImageSrc(Student.Photo, Student.PhotoMimeType);
+					}
+					@if (currentSrc != null)
 					{
-						var src = ImageHelper.ToBase64ImageSrc(Student.Photo, Student.PhotoMimeType ?? "image/jpeg");
 						<div class="mb-2">
-							<img src="@src" alt="Current photo" style="max-height: 150px; border-radius: 4px;" />
+							<img src="@currentSrc" alt="Current photo" style="max-height: 150px; border-radius: 4px;" />
 						</div>
 					}
-					<InputFile OnChange="OnPhotoSelected" accept="image/*" class="form-control" />
-					<div class="text-muted small mt-1">Выберите файл, чтобы заменить фото.</div>
+					@if (_newPhotoSrc != null)
+					{
+						<div class="mb-2">
+							<img src="@_newPhotoSrc" alt="New photo" style="max-height: 150px; border-radius: 4px;" />
+						</div>
+					}
+					@*<label class="form-label">Photo:</label>
+			@if (Student.Photo != null && Student.Photo.Length > 0)
+			{
+				var src = ImageHelper.ToBase64ImageSrc(Student.Photo, Student.PhotoMimeType ?? "image/jpeg");
+				<div class="mb-2">
+					<img src="@src" alt="Current photo" style="max-height: 150px; border-radius: 4px;" />
 				</div>
+			}*@
+					<InputFile OnChange="OnPhotoSelected" accept="image/*" class="form-control" />
+					<div class="text-muted small mt-1">Выберите файл</div>
+				</div>
+				@if (!string.IsNullOrEmpty(currentSrc) || !string.IsNullOrEmpty(_newPhotoSrc))
+				{
+					<button type="button" class="btn btn-outline-danger btn-sm" @onclick="DeletePhoto">
+						Delete Photo
+					</button>
+				}
 				@*<div class="mb-3">
-						<label for="photo" class="form-label">Photo:</label>
-						<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
-						<ValidationMessage For="() => Student.Photo" class="text-danger" />
-					</div>*@
-				@*<div class="mb-3">
-						<label for="group" class="form-label">Group:</label>
-						<InputNumber id="group" @bind-Value="Student.Group" class="form-control" />
-						<ValidationMessage For="() => Student.Group" class="text-danger" />
-					</div>*@
+			<label for="photo" class="form-label">Photo:</label>
+			<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
+			<ValidationMessage For="() => Student.Photo" class="text-danger" />
+			</div>*@
+					@*<div class="mb-3">
+				<label for="group" class="form-label">Group:</label>
+				<InputNumber id="group" @bind-Value="Student.Group" class="form-control" />
+				<ValidationMessage For="() => Student.Group" class="text-danger" />
+			</div>*@
 
 				<div class="mb-3">
 					<label for="group" class="form-label">Group:</label>
@@ -93,10 +116,10 @@ else
 					<ValidationMessage For="() => Student.Group" class="text-danger" />
 				</div>
 				@*<div class="mb-3">
-					<label for="groupnavigation" class="form-label">GroupNavigation:</label>
-					<InputNumber id="groupnavigation" @bind-Value="Student.GroupNavigation" class="form-control" />
-					<ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
-					</div>*@
+		<label for="groupnavigation" class="form-label">GroupNavigation:</label>
+		<InputNumber id="groupnavigation" @bind-Value="Student.GroupNavigation" class="form-control" />
+		<ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
+		</div>*@
 				<button type="submit" class="btn btn-primary">Save</button>
 				<a href="/students" class="btn btn-secondary">Cancel</a>
 			</EditForm>
@@ -112,6 +135,8 @@ else
 
 	private List<Group>? Groups { get; set; }
 	private Student? Student { get; set; }
+	private bool IsPhotoDeleted { get; set; } = false;
+	private string? _newPhotoSrc;
 
 	[SupplyParameterFromQuery]
 	private int StudId { get; set; }
@@ -141,14 +166,34 @@ else
 			await stream.CopyToAsync(ms);
 			Student!.Photo = ms.ToArray();
 			Student.PhotoMimeType = file.ContentType;
+			_newPhotoSrc = ImageHelper.ToBase64ImageSrc(Student.Photo, Student.PhotoMimeType);
 		}
 	}
 
 	private async Task UpdateStudent()
 	{
 		await using var context = DbFactory.CreateDbContext();
-		context.Attach(Student!).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+		// Прикрепляем сущность и помечаем как изменённую
+		context.Attach(Student!).State = EntityState.Modified;
+
+		// Если пользователь нажал «Удалить фото», явно обнуляем байты и MIME-тип в контексте
+		if (IsPhotoDeleted)
+		{
+			Student!.Photo = null;
+			Student.PhotoMimeType = null;
+			// EF Core увидит, что свойства изменились, и запишет NULL в БД
+		}
+
 		await context.SaveChangesAsync();
 		NavigationManager.NavigateTo("/students");
+	}
+
+	private void DeletePhoto()
+	{
+		IsPhotoDeleted = true;
+		Student!.Photo = null;
+		Student.PhotoMimeType = null;
+		_newPhotoSrc = null;
+		StateHasChanged(); // Перерисовать, чтобы кнопка и превью исчезли
 	}
 }

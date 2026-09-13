@@ -1,5 +1,6 @@
 @page "/groups/edit"
 @using Microsoft.EntityFrameworkCore
+@using Academy
 @using Academy.Models
 @inject IDbContextFactory<PV_521_ImportContext> DbFactory
 @inject NavigationManager NavigationManager
@@ -32,11 +33,27 @@ else
 					<InputNumber id="direction" @bind-Value="Group.Direction" class="form-control" />
 					<ValidationMessage For="() => Group.Direction" class="text-danger" />
 				</div>
-				<div class="mb-3">
+				@*<div class="mb-3">
 					<label for="weekdays" class="form-label">Weekdays:</label>
 					<InputNumber id="weekdays" @bind-Value="Group.Weekdays" class="form-control" />
 					<ValidationMessage For="() => Group.Weekdays" class="text-danger" />
+				</div>*@
+
+				<div class="mb-3">
+					<label class="form-label">Дни занятий:</label>
+					<div class="d-flex flex-wrap gap-3">
+						@foreach (var day in WeekDayHelper.Days)
+						{
+							<div class="form-check">
+								<input type="checkbox" class="form-check-input"
+									   checked="@(WeekDayHelper.IsDaySelected(Group.Weekdays, day.Key))"
+									   @onchange="e => ToggleDay(day.Key, (bool)e.Value)" />
+								<label class="form-check-label">@day.Value</label>
+							</div>
+						}
+					</div>
 				</div>
+
 				<div class="mb-3">
 					<label for="starttime" class="form-label">StartTime:</label>
 					<InputDate id="starttime" @bind-Value="Group.StartTime" class="form-control" />
@@ -48,10 +65,10 @@ else
 					<ValidationMessage For="() => Group.StartDate" class="text-danger" />
 				</div>
 				@*<div class="mb-3">
-						<label for="students" class="form-label">Students:</label>
-						<InputNumber id="students" @bind-Value="Group.Students" class="form-control" />
-						<ValidationMessage For="() => Group.Students" class="text-danger" />
-					</div>*@
+			<label for="students" class="form-label">Students:</label>
+			<InputNumber id="students" @bind-Value="Group.Students" class="form-control" />
+			<ValidationMessage For="() => Group.Students" class="text-danger" />
+		</div>*@
 				<button type="submit" class="btn btn-primary">Save</button>
 			</EditForm>
 		</div>
@@ -80,8 +97,13 @@ else
 		}
 	}
 
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
-	// For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+	private void ToggleDay(int dayBit, bool isChecked)
+	{
+		if (!Group!.Weekdays.HasValue) Group.Weekdays = 0;
+		if (isChecked) Group.Weekdays |= dayBit;
+		else Group.Weekdays &= ~dayBit;
+	}
+
 	private async Task UpdateGroup()
 	{
 		using var context = DbFactory.CreateDbContext();

@@ -65,8 +65,7 @@
 		<PropertyColumn Property="student => student.BirthDate" />
 		<PropertyColumn Property="student => student.Email" />
 		<PropertyColumn Property="student => student.Phone" />
-		<PropertyColumn Property="student => student.Photo" />
-		<PropertyColumn Property="student => student.Group" />
+		@*<PropertyColumn Property="student => student.Photo" />*@
 		@*<PropertyColumn Property="student => student.GroupNavigation" />*@
 
 		<TemplateColumn Title="Photo" Context="s">
@@ -82,6 +81,7 @@
 				<span class="text-muted">—</span>
 			}
 		</TemplateColumn>
+		<PropertyColumn Property="student => student.Group" />
 		<TemplateColumn Context="student">
 			@*<a href="@($"students/edit?studid={student.StudId}")">Edit</a> |*@
 			<a href="@($"students/details?studid={student.StudId}")">Details</a> @*|

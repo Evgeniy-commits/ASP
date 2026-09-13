@@ -1,6 +1,7 @@
 @page "/groups"
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
+@using Academy
 @using Academy.Models
 @implements IAsyncDisposable
 @inject IDbContextFactory<PV_521_ImportContext> DbFactory
@@ -37,7 +38,10 @@
 <QuickGrid TGridItem="Group" ItemsProvider="GroupsProvider" Class="table" @ref="_groupGrid">
 	<PropertyColumn Property="group => group.GroupName" />
 	<PropertyColumn Property="group => group.Direction" />
-	<PropertyColumn Property="group => group.Weekdays" />
+	@*<PropertyColumn Property="group => group.Weekdays" />*@
+	<TemplateColumn Title="Дни занятий" Context="group">
+		@WeekDayHelper.GetSelectedDaysString(group.Weekdays)
+	</TemplateColumn>
 	<PropertyColumn Property="group => group.StartTime" />
 	<PropertyColumn Property="group => group.StartDate" />
 	@*<PropertyColumn Property="group => group.Students" />*@

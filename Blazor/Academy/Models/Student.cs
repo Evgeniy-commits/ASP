@@ -42,7 +42,7 @@ public partial class Student
     [Column("photo", TypeName = "IMAGE")]
     public byte[] Photo { get; set; }
 
-    [Column("photoMimeType")]
+    [Column("photoMimeType", TypeName = "NVARCHAR(50)")]
     public string PhotoMimeType { get; set; }
 
     [Column("group")]
