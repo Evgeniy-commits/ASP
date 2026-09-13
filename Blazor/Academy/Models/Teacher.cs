@@ -11,8 +11,8 @@ namespace Academy.Models;
 public partial class Teacher
 {
     [Key]
-    [Column("teacher_id")]
-    public short TeacherId { get; set; }
+    [Column("teacher_id", TypeName = "SMALLINT")]
+    public int TeacherId { get; set; }
 
     [Column("last_name")]
     [StringLength(50)]
@@ -37,8 +37,9 @@ public partial class Teacher
     [StringLength(16)]
     public string Phone { get; set; }
 
-    [Column("photo")]
-    public byte[]? Photo { get; set; }
+    [Column("photo", TypeName = "IMAGE")]
+    public byte[] Photo { get; set; }
+    public string PhotoMimeType { get; set; }
 
     [Column("work_since")]
     public DateOnly? WorkSince { get; set; }

@@ -1,14 +1,15 @@
 ﻿@page "/students"
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
+@using Academy
 @using Academy.Models
-@inject IDbContextFactory<PV_521_ImportContext> DbFactory  
+@inject IDbContextFactory<PV_521_ImportContext> DbFactory
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Студенты</PageTitle>
 
-<h1>Index</h1>
+<h1>Студенты</h1>
 
 <p>
 	<a href="students/create">Create New</a>
@@ -68,6 +69,19 @@
 		<PropertyColumn Property="student => student.Group" />
 		@*<PropertyColumn Property="student => student.GroupNavigation" />*@
 
+		<TemplateColumn Title="Photo" Context="s">
+			@{
+				var src = ImageHelper.ToBase64ImageSrc(s.Photo, s.PhotoMimeType);
+			}
+			@if (src != null)
+			{
+				<img src="@src" alt="Photo" style="max-width: 50px; height: auto; border-radius: 4px;" />
+			}
+			else
+			{
+				<span class="text-muted">—</span>
+			}
+		</TemplateColumn>
 		<TemplateColumn Context="student">
 			@*<a href="@($"students/edit?studid={student.StudId}")">Edit</a> |*@
 			<a href="@($"students/details?studid={student.StudId}")">Details</a> @*|
@@ -84,7 +98,7 @@
 														//Когда выбрано направление, здесь остаются только подходящие группы.
 	private List<Direction>? Directions { get; set; }   //справочник направлений (ID + название).
 
-	[SupplyParameterFromQuery]                          //Эти атрибуты связывают свойства с query-параметрами URL. 
+	[SupplyParameterFromQuery]                          //Эти атрибуты связывают свойства с query-параметрами URL.
 														//string? для обоих(даже для DirectionFilter, который хранит числовой ID) —
 														//потому что SupplyParameterFromQuery не умеет парсить byte? напрямую.
 	string? GroupFilter { get; set; }
@@ -179,17 +193,17 @@
 		}
 	}
 
+
 	private void OnGroupFilterChanged(ChangeEventArgs e)
 	{
 		GroupFilter = e.Value?.ToString();
 
-		// Если выбрана группа — автоматически подставляем её направление
 		if (!string.IsNullOrEmpty(GroupFilter) && AllGroups != null)
 		{
 			var group = AllGroups.FirstOrDefault(g => g.GroupName == GroupFilter);
-			if (group != null && group.Direction.HasValue)
+			if (group != null)
 			{
-				DirectionFilter = group.Direction.Value.ToString();
+				DirectionFilter = group.Direction.ToString();
 			}
 		}
 

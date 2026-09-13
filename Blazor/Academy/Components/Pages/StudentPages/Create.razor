@@ -47,11 +47,24 @@
 				<InputText id="phone" @bind-Value="Student.Phone" class="form-control" />
 				<ValidationMessage For="() => Student.Phone" class="text-danger" />
 			</div>
+
 			<div class="mb-3">
-				<label for="photo" class="form-label">Photo:</label>
-				<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
-				<ValidationMessage For="() => Student.Photo" class="text-danger" />
+				<label class="form-label">Photo:</label>
+				@if (Student.Photo != null && Student.Photo.Length > 0)
+				{
+					var src = ImageHelper.ToBase64ImageSrc(Student.Photo, Student.PhotoMimeType);
+					<div class="mb-2">
+						<img src="@src" alt="Selected photo" style="max-height: 150px; border-radius: 4px;" />
+					</div>
+				}
+				<InputFile OnChange="OnPhotoSelected" accept="image/*" class="form-control" />
 			</div>
+
+			@*<div class="mb-3">
+					<label for="photo" class="form-label">Photo:</label>
+					<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
+					<ValidationMessage For="() => Student.Photo" class="text-danger" />
+				</div>*@
 			<div class="mb-3">
 				<label for="group" class="form-label">Group:</label>
 				<InputNumber id="group" @bind-Value="Student.Group" class="form-control" />
@@ -72,6 +85,7 @@
 					<ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
 				</div>*@
 			<button type="submit" class="btn btn-primary">Create</button>
+			<a href="/students" class="btn btn-secondary">Cancel</a>
 		</EditForm>
 	</div>
 </div>
@@ -104,6 +118,7 @@
 			using var ms = new MemoryStream();
 			await stream.CopyToAsync(ms);
 			Student!.Photo = ms.ToArray();
+			Student.PhotoMimeType = file.ContentType;
 		}
 	}
 

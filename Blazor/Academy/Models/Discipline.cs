@@ -11,13 +11,13 @@ namespace Academy.Models;
 public partial class Discipline
 {
     [Key]
-    [Column("discipline_id")]
-    public short DisciplineId { get; set; }
+    [Column("discipline_id", TypeName = "SMALLINT")]
+    public int DisciplineId { get; set; }
 
     [Column("discipline_name")]
     [StringLength(150)]
     public string DisciplineName { get; set; }
 
-    [Column("number_of_lessons")]
-    public byte NumberOfLessons { get; set; }
+    [Column("number_of_lessons", TypeName = "TINYINT")]
+    public int NumberOfLessons { get; set; }
 }

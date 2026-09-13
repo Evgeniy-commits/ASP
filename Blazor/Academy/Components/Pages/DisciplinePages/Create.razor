@@ -11,41 +11,41 @@
 <h2>Discipline</h2>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <EditForm method="post" Model="Discipline" OnValidSubmit="AddDiscipline" FormName="create" Enhance>
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <label for="disciplinename" class="form-label">DisciplineName:</label> 
-                <InputText id="disciplinename" @bind-Value="Discipline.DisciplineName" class="form-control" /> 
-                <ValidationMessage For="() => Discipline.DisciplineName" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="numberoflessons" class="form-label">NumberOfLessons:</label> 
-                <InputByte id="numberoflessons" @bind-Value="Discipline.NumberOfLessons" class="form-control" /> 
-                <ValidationMessage For="() => Discipline.NumberOfLessons" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
-    </div>
+	<div class="col-md-4">
+		<EditForm method="post" Model="Discipline" OnValidSubmit="AddDiscipline" FormName="create" Enhance>
+			<DataAnnotationsValidator />
+			<ValidationSummary class="text-danger" role="alert" />
+			<div class="mb-3">
+				<label for="disciplinename" class="form-label">DisciplineName:</label>
+				<InputText id="disciplinename" @bind-Value="Discipline.DisciplineName" class="form-control" />
+				<ValidationMessage For="() => Discipline.DisciplineName" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="numberoflessons" class="form-label">NumberOfLessons:</label>
+				<InputNumber id="numberoflessons" @bind-Value="Discipline.NumberOfLessons" class="form-control" />
+				<ValidationMessage For="() => Discipline.NumberOfLessons" class="text-danger" />
+			</div>
+			<button type="submit" class="btn btn-primary">Create</button>
+		</EditForm>
+	</div>
 </div>
 
 <div>
-    <a href="/disciplines">Back to List</a>
+	<a href="/disciplines">Back to List</a>
 </div>
 
 @code {
-    [SupplyParameterFromForm]
-    private Discipline Discipline { get; set; } = default!;
+	[SupplyParameterFromForm]
+	private Discipline Discipline { get; set; } = default!;
 
-    protected override void OnInitialized() => Discipline ??= new();
+	protected override void OnInitialized() => Discipline ??= new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task AddDiscipline()
-    {
-        using var context = DbFactory.CreateDbContext();
-        context.Disciplines.Add(Discipline);
-        await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/disciplines");
-    }
+	// To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+	private async Task AddDiscipline()
+	{
+		using var context = DbFactory.CreateDbContext();
+		context.Disciplines.Add(Discipline);
+		await context.SaveChangesAsync();
+		NavigationManager.NavigateTo("/disciplines");
+	}
 }

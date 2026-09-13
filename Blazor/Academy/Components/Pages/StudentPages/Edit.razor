@@ -12,12 +12,12 @@
 <hr />
 @if (Student is null)
 {
-    <p><em>Loading...</em></p>
+	<p><em>Loading...</em></p>
 }
 else
 {
-    <div class="row">
-        <div class="col-md-4">
+	<div class="row">
+		<div class="col-md-4">
 			<EditForm method="post" Model="Student" OnValidSubmit="UpdateStudent" FormName="edit" Enhance>
 				<DataAnnotationsValidator />
 				<ValidationSummary role="alert" />
@@ -54,16 +54,29 @@ else
 					<InputText id="phone" @bind-Value="Student.Phone" class="form-control" />
 					<ValidationMessage For="() => Student.Phone" class="text-danger" />
 				</div>
+
 				<div class="mb-3">
-					<label for="photo" class="form-label">Photo:</label>
-					<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
-					<ValidationMessage For="() => Student.Photo" class="text-danger" />
+					<label class="form-label">Photo:</label>
+					@if (Student.Photo != null && Student.Photo.Length > 0)
+					{
+						var src = ImageHelper.ToBase64ImageSrc(Student.Photo, Student.PhotoMimeType ?? "image/jpeg");
+						<div class="mb-2">
+							<img src="@src" alt="Current photo" style="max-height: 150px; border-radius: 4px;" />
+						</div>
+					}
+					<InputFile OnChange="OnPhotoSelected" accept="image/*" class="form-control" />
+					<div class="text-muted small mt-1">Выберите файл, чтобы заменить фото.</div>
 				</div>
-				<div class="mb-3">
-					<label for="group" class="form-label">Group:</label>
-					<InputNumber id="group" @bind-Value="Student.Group" class="form-control" />
-					<ValidationMessage For="() => Student.Group" class="text-danger" />
-				</div>
+				@*<div class="mb-3">
+						<label for="photo" class="form-label">Photo:</label>
+						<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
+						<ValidationMessage For="() => Student.Photo" class="text-danger" />
+					</div>*@
+				@*<div class="mb-3">
+						<label for="group" class="form-label">Group:</label>
+						<InputNumber id="group" @bind-Value="Student.Group" class="form-control" />
+						<ValidationMessage For="() => Student.Group" class="text-danger" />
+					</div>*@
 
 				<div class="mb-3">
 					<label for="group" class="form-label">Group:</label>
@@ -80,18 +93,19 @@ else
 					<ValidationMessage For="() => Student.Group" class="text-danger" />
 				</div>
 				@*<div class="mb-3">
-		<label for="groupnavigation" class="form-label">GroupNavigation:</label>
-		<InputNumber id="groupnavigation" @bind-Value="Student.GroupNavigation" class="form-control" />
-		<ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
-		</div>*@
+					<label for="groupnavigation" class="form-label">GroupNavigation:</label>
+					<InputNumber id="groupnavigation" @bind-Value="Student.GroupNavigation" class="form-control" />
+					<ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
+					</div>*@
 				<button type="submit" class="btn btn-primary">Save</button>
+				<a href="/students" class="btn btn-secondary">Cancel</a>
 			</EditForm>
-        </div>
-    </div>
+		</div>
+	</div>
 }
 
 <div>
-    <a href="/students">Back to List</a>
+	<a href="/students">Back to List</a>
 </div>
 
 @code {
@@ -126,6 +140,7 @@ else
 			using var ms = new MemoryStream();
 			await stream.CopyToAsync(ms);
 			Student!.Photo = ms.ToArray();
+			Student.PhotoMimeType = file.ContentType;
 		}
 	}
 

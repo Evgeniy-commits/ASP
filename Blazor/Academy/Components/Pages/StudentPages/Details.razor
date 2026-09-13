@@ -9,54 +9,70 @@
 <h1>Details</h1>
 
 <div>
-    <h2>Student</h2>
-    <hr />
-    @if (student is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">LastName</dt>
-            <dd class="col-sm-10">@student.LastName</dd>
-            <dt class="col-sm-2">FirstName</dt>
-            <dd class="col-sm-10">@student.FirstName</dd>
-            <dt class="col-sm-2">MiddleName</dt>
-            <dd class="col-sm-10">@student.MiddleName</dd>
-            <dt class="col-sm-2">BirthDate</dt>
-            <dd class="col-sm-10">@student.BirthDate</dd>
-            <dt class="col-sm-2">Email</dt>
-            <dd class="col-sm-10">@student.Email</dd>
-            <dt class="col-sm-2">Phone</dt>
-            <dd class="col-sm-10">@student.Phone</dd>
-            <dt class="col-sm-2">Photo</dt>
-            <dd class="col-sm-10">@student.Photo</dd>
-            <dt class="col-sm-2">Group</dt>
-            <dd class="col-sm-10">@student.Group</dd>
-            @*<dt class="col-sm-2">GroupNavigation</dt>
-            <dd class="col-sm-10">@student.GroupNavigation</dd>*@
-        </dl>
-        <div>
-            <a href="@($"/students/edit?studid={student.StudId}")">Edit</a> |
-            <a href="@($"/students")">Back to List</a>
-        </div>
-    }
+	<h2>Student</h2>
+	<hr />
+	@if (student is null)
+	{
+		<p><em>Loading...</em></p>
+	}
+	else
+	{
+		<dl class="row">
+			<dt class="col-sm-2">LastName</dt>
+			<dd class="col-sm-10">@student.LastName</dd>
+			<dt class="col-sm-2">FirstName</dt>
+			<dd class="col-sm-10">@student.FirstName</dd>
+			<dt class="col-sm-2">MiddleName</dt>
+			<dd class="col-sm-10">@student.MiddleName</dd>
+			<dt class="col-sm-2">BirthDate</dt>
+			<dd class="col-sm-10">@student.BirthDate</dd>
+			<dt class="col-sm-2">Email</dt>
+			<dd class="col-sm-10">@student.Email</dd>
+			<dt class="col-sm-2">Phone</dt>
+			<dd class="col-sm-10">@student.Phone</dd>
+			<dt class="col-sm-2">Photo</dt>
+			<dd class="col-sm-10">
+				@{
+					var src = ImageHelper.ToBase64ImageSrc(student.Photo, student.PhotoMimeType);
+				}
+				@if (src != null)
+				{
+					<img src="@src" alt="Photo" style="max-height: 200px; border-radius: 8px;" />
+				}
+				else
+				{
+					<span class="text-muted">No photo</span>
+				}
+			</dd>
+			@*<dt class="col-sm-2">Photo</dt>
+				<dd class="col-sm-10">@student.Photo</dd>*@
+			<dt class="col-sm-2">Group</dt>
+			<dd class="col-sm-10">@student.Group</dd>
+			@*<dt class="col-sm-2">GroupNavigation</dt>
+				<dd class="col-sm-10">@student.GroupNavigation</dd>*@
+		</dl>
+		<div>
+			<a href="@($"/students/edit?studid={student.StudId}")">Edit</a> |
+			<a href="@($"/students")">Back to List</a>
+		</div>
+	}
 </div>
 
 @code {
-    private Student? student;
+	private Student? student;
 
-    [SupplyParameterFromQuery]
-    private int StudId { get; set; }
+	[SupplyParameterFromQuery]
+	private int StudId { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        using var context = DbFactory.CreateDbContext();
-        student = await context.Students.FirstOrDefaultAsync(m => m.StudId == StudId);
+	protected override async Task OnInitializedAsync()
+	{
+		await using var context = DbFactory.CreateDbContext();
+		student = await context.Students.FirstOrDefaultAsync(m => m.StudId == StudId);
 
-        if (student is null)
-        {
-            NavigationManager.NavigateTo("notfound");
-        }
-    }
+		if (student is null)
+		{
+			NavigationManager.NavigateTo("notfound");
+			return;
+		}
+	}
 }

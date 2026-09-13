@@ -18,11 +18,11 @@ public partial class Group
     [StringLength(10)]
     public string GroupName { get; set; }
 
-    [Column("direction")]
-    public byte? Direction { get; set; }
+    [Column("direction", TypeName = "TINYINT")]
+    public int? Direction { get; set; }
 
-    [Column("weekdays")]
-    public byte? Weekdays { get; set; }
+    [Column("weekdays", TypeName = "TINYINT")]
+    public int? Weekdays { get; set; }
 
     [Column("start_time")]
     [Precision(0)]

@@ -7,15 +7,34 @@
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
-<PageTitle>Index</PageTitle>
 
-<h1>Index</h1>
+<PageTitle>Группы</PageTitle>
+
+<h1>Группы</h1>
 
 <p>
 	<a href="groups/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="context.Groups">
+<div class="control">
+	<div>
+		<label>Направление:</label>
+		<select @onchange="OnDirectionFilterChanged" class="from-select">
+			<option value="">Все направления</option>
+			@if (Directions != null)
+			{
+				foreach (var d in Directions)
+				{
+					<option value="@d.DirectionId" 
+							selected="@(d.DirectionId.ToString() == DirectionFilter)">
+						@d.DirectionName
+					</option>
+				}
+			}
+		</select>
+	</div>
+</div>
+<QuickGrid TGridItem="Group" ItemsProvider="GroupsProvider" Class="table" @ref="_groupGrid">
 	<PropertyColumn Property="group => group.GroupName" />
 	<PropertyColumn Property="group => group.Direction" />
 	<PropertyColumn Property="group => group.Weekdays" />
@@ -30,13 +49,54 @@
 	</TemplateColumn>
 </QuickGrid>
 
-@code {
-	private PV_521_ImportContext context = default!;
+@code
+{
+	private List<Direction>? Directions { get; set; }
 
-	protected override void OnInitialized()
+	[SupplyParameterFromQuery]
+	string? DirectionFilter { get; set; }
+
+	private QuickGrid<Group>? _groupGrid;
+
+	//private PV_521_ImportContext context = default!;
+
+	protected override async Task OnInitializedAsync()
 	{
-		context = DbFactory.CreateDbContext();
+		await using var ctx = DbFactory.CreateDbContext();
+		Directions = ctx.Directions.OrderBy(d => d.DirectionName).ToList();
 	}
 
-	public async ValueTask DisposeAsync() => await context.DisposeAsync();
+	private async ValueTask<GridItemsProviderResult<Group>> GroupsProvider(GridItemsProviderRequest<Group> request)
+	{
+		await using PV_521_ImportContext? context = DbFactory.CreateDbContext();
+		IQueryable<Group>? query = context.Groups.AsQueryable();
+
+		if (!string.IsNullOrEmpty(DirectionFilter) && byte.TryParse(DirectionFilter, out var dirId))
+		{
+			query = query.Where(g => g.Direction == dirId);
+		}
+
+		query = query.OrderBy(g => g.GroupName);
+
+		int totalCount = await query.CountAsync();
+
+		List<Group>? items = await query
+						.Skip(request.StartIndex)
+						.Take(request.Count ?? 100)
+						.ToListAsync();
+
+		return new GridItemsProviderResult<Group>
+		{
+			TotalItemCount = totalCount,
+			Items = items
+		};
+	}
+
+	private void OnDirectionFilterChanged(ChangeEventArgs e)
+	{
+		DirectionFilter = e.Value?.ToString();
+		_groupGrid?.RefreshDataAsync();
+	}
+
+	public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }

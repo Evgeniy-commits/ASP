@@ -40,12 +40,17 @@ public partial class PV_521_ImportContext : DbContext
         {
             entity.Property(e => e.Phone).IsFixedLength();
 
+            entity.Property(e => e.Photo).HasColumnType("nvarchar(50)");
+            entity.Property(e => e.PhotoMimeType).HasMaxLength(50);
+
             entity.HasOne(d => d.GroupNavigation).WithMany(p => p.Students).HasConstraintName("FK_Students_Groups");
         });
 
         modelBuilder.Entity<Teacher>(entity =>
         {
             entity.Property(e => e.Phone).IsFixedLength();
+            entity.Property(e => e.Photo).HasColumnType("nvarchar(50)");
+            entity.Property(e => e.PhotoMimeType).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Direction>(entity =>

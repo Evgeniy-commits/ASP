@@ -39,8 +39,11 @@ public partial class Student
     [StringLength(16)]
     public string Phone { get; set; }
 
-    [Column("photo")]
+    [Column("photo", TypeName = "IMAGE")]
     public byte[] Photo { get; set; }
+
+    [Column("photoMimeType")]
+    public string PhotoMimeType { get; set; }
 
     [Column("group")]
     public int? Group { get; set; }
