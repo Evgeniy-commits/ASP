@@ -1,9 +1,9 @@
 @page "/teachers/create"
 @using Microsoft.EntityFrameworkCore
+@using Academy
 @using Academy.Models
-@inject IDbContextFactory<PV_521_ImportContext> DbFactory
+@inject IDbContextFactory<Academy.Models.PV_521_ImportContext> DbFactory
 @inject NavigationManager NavigationManager
-@rendermode InteractiveServer
 
 <PageTitle>Create</PageTitle>
 
@@ -46,11 +46,29 @@
 				<InputText id="phone" @bind-Value="Teacher.Phone" class="form-control" />
 				<ValidationMessage For="() => Teacher.Phone" class="text-danger" />
 			</div>
-			<div class="mb-3">
-				<label for="photo" class="form-label">Photo:</label>
-				<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
-				<ValidationMessage For="() => Teacher.Photo" class="text-danger" />
+			@*<div class="mb-3">
+			<label for="photo" class="form-label">Photo:</label>
+			<InputText id="photo" @bind-Value="Teacher.Photo" class="form-control" />
+			<ValidationMessage For="() => Teacher.Photo" class="text-danger" />
+		</div>
+		<div class="mb-3">
+			<label for="photomimetype" class="form-label">PhotoMimeType:</label>
+			<InputText id="photomimetype" @bind-Value="Teacher.PhotoMimeType" class="form-control" />
+			<ValidationMessage For="() => Teacher.PhotoMimeType" class="text-danger" />
+		</div>*@
+
+			<div>
+				<label class="form-label">Photo:</label>
+				@if (Teacher.Photo != null && Teacher.Photo.Length > 0)
+				{
+					var src = ImageHelper.ToBase64ImageSrc(Teacher.Photo, Teacher.PhotoMimeType);
+					<div class="mb-2">
+						<img src="@src" alt="Selected photo" style="max-height: 150px; border-radius: 4px;" />
+					</div>
+				}
+				<InputFile OnChange="OnPhotoSelected" accept="image/*" class="form-control" />
 			</div>
+
 			<div class="mb-3">
 				<label for="worksince" class="form-label">WorkSince:</label>
 				<InputDate id="worksince" @bind-Value="Teacher.WorkSince" class="form-control" />
@@ -62,6 +80,7 @@
 				<ValidationMessage For="() => Teacher.Rate" class="text-danger" />
 			</div>
 			<button type="submit" class="btn btn-primary">Create</button>
+			<a href="/teachers" class="btn btn-secondary">Cancel</a>
 		</EditForm>
 	</div>
 </div>
@@ -70,13 +89,13 @@
 	<a href="/teachers">Back to List</a>
 </div>
 
-@code {
+@code 
+{
 	[SupplyParameterFromForm]
 	private Teacher Teacher { get; set; } = default!;
 
 	protected override void OnInitialized() => Teacher ??= new();
 
-	// To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
 	private async Task AddTeacher()
 	{
 		using var context = DbFactory.CreateDbContext();
@@ -94,6 +113,7 @@
 			using var ms = new MemoryStream();
 			await stream.CopyToAsync(ms);
 			Teacher!.Photo = ms.ToArray();
+			Teacher.PhotoMimeType = file.ContentType;
 		}
 	}
 }

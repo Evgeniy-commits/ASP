@@ -39,6 +39,8 @@ public partial class Teacher
 
     [Column("photo", TypeName = "IMAGE")]
     public byte[] Photo { get; set; }
+
+    [Column("photoMimeType", TypeName = "NVARCHAR(50)")]
     public string PhotoMimeType { get; set; }
 
     [Column("work_since")]

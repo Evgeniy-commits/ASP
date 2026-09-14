@@ -1,9 +1,9 @@
 @page "/teachers/edit"
 @using Microsoft.EntityFrameworkCore
+@using Academy
 @using Academy.Models
 @inject IDbContextFactory<Academy.Models.PV_521_ImportContext> DbFactory
 @inject NavigationManager NavigationManager
-@rendermode InteractiveServer
 
 <PageTitle>Edit</PageTitle>
 
@@ -19,7 +19,7 @@ else
 {
 	<div class="row">
 		<div class="col-md-4">
-			<EditForm method="post" Model="Teacher" OnValidSubmit="UpdateTeacher" FormName="edit" Enhance>
+			<EditForm Model="Teacher" OnValidSubmit="UpdateTeacher">
 				<DataAnnotationsValidator />
 				<ValidationSummary role="alert" />
 				<input type="hidden" name="Teacher.TeacherId" value="@Teacher.TeacherId" />
@@ -53,11 +53,45 @@ else
 					<InputText id="phone" @bind-Value="Teacher.Phone" class="form-control" />
 					<ValidationMessage For="() => Teacher.Phone" class="text-danger" />
 				</div>
+				@*<div class="mb-3">
+						<label for="photo" class="form-label">Photo:</label>
+						<InputText id="photo" @bind-Value="Teacher.Photo" class="form-control" />
+						<ValidationMessage For="() => Teacher.Photo" class="text-danger" />
+					</div>*@
+
 				<div class="mb-3">
-					<label for="photo" class="form-label">Photo:</label>
-					<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
-					<ValidationMessage For="() => Teacher.Photo" class="text-danger" />
+					<label class="form-label">Photo:</label>
+					@{
+						var currentSrc = ImageHelper.ToBase64ImageSrc(Teacher.Photo, Teacher.PhotoMimeType);
+					}
+					@if (currentSrc != null)
+					{
+						<div class="mb-2">
+							<img src="@currentSrc" alt="Current photo" style="max-height: 150px; border-radius: 4px;" />
+						</div>
+					}
+					@if (_newPhotoSrc != null)
+					{
+						<div class="mb-2">
+							<img src="@_newPhotoSrc" alt="New photo" style="max-height: 150px; border-radius: 4px;" />
+						</div>
+					}
+					<InputFile OnChange="OnPhotoSelected" accept="image/*" class="form-control" />
+					<div class="text-muted small mt-1">Выберите файл</div>
 				</div>
+				<div>
+					@if (!string.IsNullOrEmpty(currentSrc) || !string.IsNullOrEmpty(_newPhotoSrc))
+					{
+						<button type="button" class="btn btn-outline-danger btn-sm" @onclick="DeletePhoto">
+							Delete Photo
+						</button>
+					}
+				</div>
+				@*<div class="mb-3">
+					<label for="photomimetype" class="form-label">PhotoMimeType:</label>
+					<InputText id="photomimetype" @bind-Value="Teacher.PhotoMimeType" class="form-control" />
+					<ValidationMessage For="() => Teacher.PhotoMimeType" class="text-danger" />
+				</div>*@
 				<div class="mb-3">
 					<label for="worksince" class="form-label">WorkSince:</label>
 					<InputDate id="worksince" @bind-Value="Teacher.WorkSince" class="form-control" />
@@ -69,6 +103,7 @@ else
 					<ValidationMessage For="() => Teacher.Rate" class="text-danger" />
 				</div>
 				<button type="submit" class="btn btn-primary">Save</button>
+				<a href="/teachers" class="btn btn-secondary">Cancel</a>
 			</EditForm>
 		</div>
 	</div>
@@ -80,10 +115,12 @@ else
 
 @code {
 	[SupplyParameterFromQuery]
-	private short TeacherId { get; set; }
+	private int TeacherId { get; set; }
 
 	[SupplyParameterFromForm]
 	private Teacher? Teacher { get; set; }
+	private bool IsPhotoDeleted { get; set; } = false;
+	private string? _newPhotoSrc;
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -93,40 +130,10 @@ else
 		if (Teacher is null)
 		{
 			NavigationManager.NavigateTo("notfound");
+			return;
 		}
 	}
 
-	// To protect from overposting attacks, enable the specific properties you want to bind to.
-	// For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-	private async Task UpdateTeacher()
-	{
-		using var context = DbFactory.CreateDbContext();
-		context.Attach(Teacher!).State = EntityState.Modified;
-
-		try
-		{
-			await context.SaveChangesAsync();
-		}
-		catch (DbUpdateConcurrencyException)
-		{
-			if (!TeacherExists(Teacher!.TeacherId))
-			{
-				NavigationManager.NavigateTo("notfound");
-			}
-			else
-			{
-				throw;
-			}
-		}
-
-		NavigationManager.NavigateTo("/teachers");
-	}
-
-	private bool TeacherExists(int teacherid)
-	{
-		using var context = DbFactory.CreateDbContext();
-		return context.Teachers.Any(e => e.TeacherId == teacherid);
-	}
 	private async Task OnPhotoSelected(InputFileChangeEventArgs e)
 	{
 		var file = e.File;
@@ -136,6 +143,34 @@ else
 			using var ms = new MemoryStream();
 			await stream.CopyToAsync(ms);
 			Teacher!.Photo = ms.ToArray();
+			Teacher.PhotoMimeType = file.ContentType;
+			_newPhotoSrc = ImageHelper.ToBase64ImageSrc(Teacher.Photo, Teacher.PhotoMimeType);
 		}
+	}
+
+	private async Task UpdateTeacher()
+	{
+		using var context = DbFactory.CreateDbContext();
+		context.Attach(Teacher!).State = EntityState.Modified;
+
+		// Если пользователь нажал «Удалить фото», явно обнуляем байты и MIME-тип в контексте
+		if (IsPhotoDeleted)
+		{
+			Teacher!.Photo = null;
+			Teacher.PhotoMimeType = null;
+			// EF Core увидит, что свойства изменились, и запишет NULL в БД
+		}
+
+		await context.SaveChangesAsync();
+		NavigationManager.NavigateTo("/teachers");
+	}
+
+	private void DeletePhoto()
+	{
+		IsPhotoDeleted = true;
+		Teacher!.Photo = null;
+		Teacher.PhotoMimeType = null;
+		_newPhotoSrc = null;
+		StateHasChanged(); // Перерисовать, чтобы кнопка и превью исчезли
 	}
 }

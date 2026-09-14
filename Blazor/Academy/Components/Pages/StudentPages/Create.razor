@@ -123,11 +123,11 @@
 		}
 	}
 
-	private async Task UpdateStudent()
-	{
-		await using var context = DbFactory.CreateDbContext();
-		context.Attach(Student!).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-		await context.SaveChangesAsync();
-		NavigationManager.NavigateTo("/students");
-	}
+	//private async Task UpdateStudent()
+	//{
+	//	await using var context = DbFactory.CreateDbContext();
+	//	context.Attach(Student!).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+	//	await context.SaveChangesAsync();
+	//	NavigationManager.NavigateTo("/students");
+	//}
 }

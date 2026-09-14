@@ -84,12 +84,14 @@ else
 					<InputFile OnChange="OnPhotoSelected" accept="image/*" class="form-control" />
 					<div class="text-muted small mt-1">Âûבונטעו פאיכ</div>
 				</div>
-				@if (!string.IsNullOrEmpty(currentSrc) || !string.IsNullOrEmpty(_newPhotoSrc))
-				{
-					<button type="button" class="btn btn-outline-danger btn-sm" @onclick="DeletePhoto">
-						Delete Photo
-					</button>
-				}
+				<div>
+					@if (!string.IsNullOrEmpty(currentSrc) || !string.IsNullOrEmpty(_newPhotoSrc))
+					{
+						<button type="button" class="btn btn-outline-danger btn-sm" @onclick="DeletePhoto">
+							Delete Photo
+						</button>
+					}
+				</div>
 				@*<div class="mb-3">
 			<label for="photo" class="form-label">Photo:</label>
 			<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
@@ -134,6 +136,7 @@ else
 @code {
 
 	private List<Group>? Groups { get; set; }
+    [SupplyParameterFromForm]
 	private Student? Student { get; set; }
 	private bool IsPhotoDeleted { get; set; } = false;
 	private string? _newPhotoSrc;
