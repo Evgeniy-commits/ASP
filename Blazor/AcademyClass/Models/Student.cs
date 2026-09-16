@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AcademyClass.Models
 {
@@ -8,6 +9,10 @@ namespace AcademyClass.Models
         public int stud_id { get; set; }
 
         [Required]
+        [ForeignKey(nameof(Group))]
         public int group {  get; set; }
+
+        //Nav Prop
+        public Group Group { get; set; }
     }
 }

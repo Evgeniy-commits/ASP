@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AcademyClass.Models
 {
@@ -24,7 +25,12 @@ namespace AcademyClass.Models
 
         [Phone]
         public string? phone { get; set; }
-
+                
+        [Column("photo", TypeName = "IMAGE")]
         public byte[]? photo { get; set; }
+
+        //Calc properties
+        public string FullName
+        { get => $"{last_name} {first_name} {middle_name}"; }
     }
 }

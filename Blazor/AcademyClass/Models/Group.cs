@@ -28,11 +28,10 @@ public class Group
 
     public DateOnly? start_date { get; set; }
 
-   
-    //Navigation properties:
-    public Direction? Direction { get; set; } 
 
-    //[InverseProperty("GroupNavigation")]
-    //public virtual ICollection<Student> Students { get; set; } = new List<Student>();
+    //Navigation properties:
+    public Direction Direction { get; set; } = default!;
+
+   public virtual ICollection<Student> Students { get; set; } = default!;
 
 }

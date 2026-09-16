@@ -2,13 +2,12 @@
 {
     public static class ImageHelper
     {
-        public static string? ToBase64ImageSrc(byte[]? bytes, string? mimeType)
+        public static string? ToBase64ImageSrc(byte[]? bytes)
         {
-            if (bytes == null || mimeType == null) return null;
+            if (bytes == null ) return null;
 
-            var mime = string.IsNullOrWhiteSpace(mimeType) ? "image/jpeg" : mimeType;
             var base64 = Convert.ToBase64String(bytes);
-            return $"data:{mimeType};base64,{base64}";
+            return $"base64,{base64}";
         }
     }
     public static class WeekDayHelper
