@@ -21,12 +21,23 @@
                 <InputText id="group_name" @bind-Value="Group.group_name" class="form-control" aria-required="true"/> 
                 <ValidationMessage For="() => Group.group_name" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
-                <span class="text-danger">*</span>
-                <label for="direction" class="form-label">direction:</label> 
-                <InputNumber id="direction" @bind-Value="Group.direction" class="form-control" aria-required="true"/> 
-                <ValidationMessage For="() => Group.direction" class="text-danger" /> 
-            </div>        
+			<div class="mb-3">
+				<span class="text-danger">*</span>
+				<label for="direction" class="form-label">direction:</label>
+				@*<InputNumber id="direction" @bind-Value="Group.direction" class="form-control" aria-required="true"/>*@
+          
+				<InputSelect id="direction" @bind-Value="Group.direction" class="form-control">
+                    <option disabled selected> --- Выберите направление обучения --- </option>
+					@using (AcademyClassContext context = DbFactory.CreateDbContext())
+					{
+						@foreach (Direction d in context.Directions)
+						{
+							<option value="@d.direction_id">@d.direction_name</option>
+						}
+					}
+				</InputSelect>
+				<ValidationMessage For="() => Group.direction" class="text-danger" />
+			</div>        
             <div class="mb-3">
                 <label for="learning_days" class="form-label">learning_days:</label> 
                 <InputNumber id="learning_days" @bind-Value="Group.learning_days" class="form-control" /> 

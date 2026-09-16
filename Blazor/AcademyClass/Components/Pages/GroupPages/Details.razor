@@ -20,16 +20,18 @@
             <dt class="col-sm-2">group_name</dt>
             <dd class="col-sm-10">@group.group_name</dd>
             <dt class="col-sm-2">direction</dt>
-            <dd class="col-sm-10">@group.direction</dd>
+            <dd class="col-sm-10">@group?.Direction?.direction_name</dd>
             <dt class="col-sm-2">learning_days</dt>
-            <dd class="col-sm-10">@group.learning_days</dd>
+            <dd class="col-sm-10">@group?.learning_days</dd>
             <dt class="col-sm-2">start_time</dt>
-            <dd class="col-sm-10">@group.start_time</dd>
+            <dd class="col-sm-10">@group?.start_time</dd>
             <dt class="col-sm-2">start_date</dt>
-            <dd class="col-sm-10">@group.start_date</dd>
+            <dd class="col-sm-10">@group?.start_date</dd>
         </dl>
+
+
         <div>
-            <a href="@($"/groups/edit?group_id={group.group_id}")">Edit</a> |
+            <a href="@($"/groups/edit?group_id={group?.group_id}")">Edit</a> |
             <a href="@($"/groups")">Back to List</a>
         </div>
     }
@@ -44,7 +46,11 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        group = await context.Groups.FirstOrDefaultAsync(m => m.group_id == group_id);
+        group = await context
+                        .Groups
+                        .Include(g=>g.Direction)
+                        .FirstOrDefaultAsync(m => m.group_id == group_id);
+        //group = await context.Groups.FirstOrDefaultAsync(m => m.group_id == group_id);
 
         if (group is null)
         {

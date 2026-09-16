@@ -14,5 +14,9 @@ namespace AcademyClass.Models
         [Column(TypeName = "NVARCHAR(50)")]
         [StringLength(50, MinimumLength = 2)]
         public string direction_name { get; set; }
+
+
+        //Navigation Properties
+        public ICollection<Group> Groups { get; set; }
     }
 }

@@ -32,7 +32,7 @@ public class Group
     //Navigation properties:
     public Direction? Direction { get; set; } 
 
-//    [InverseProperty("GroupNavigation")]
-//    public virtual ICollection<Student> Students { get; set; } = new List<Student>();
+    //[InverseProperty("GroupNavigation")]
+    //public virtual ICollection<Student> Students { get; set; } = new List<Student>();
 
 }
