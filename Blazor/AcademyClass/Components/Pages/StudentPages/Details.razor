@@ -5,47 +5,47 @@
 @inject IDbContextFactory<AcademyClassContext> DbFactory
 @inject NavigationManager NavigationManager
 
-<PageTitle>Details</PageTitle>
-
-<h1>Details</h1>
+<PageTitle>Student</PageTitle>
 
 <div>
-	<h2>Student</h2>
-	<hr />
 	@if (student is null)
 	{
 		<p><em>Loading...</em></p>
 	}
 	else
 	{
+		<h1>@student.FullName</h1>
+		<hr />
 		<dl class="row">
-			<dt class="col-sm-2">group</dt>
-			<dd class="col-sm-10">@student.group</dd>
-			<dt class="col-sm-2">last_name</dt>
+			@*<dt class="col-sm-2">last_name</dt>
 			<dd class="col-sm-10">@student.last_name</dd>
 			<dt class="col-sm-2">first_name</dt>
 			<dd class="col-sm-10">@student.first_name</dd>
 			<dt class="col-sm-2">middle_name</dt>
-			<dd class="col-sm-10">@student.middle_name</dd>
+			<dd class="col-sm-10">@student.middle_name</dd>*@
+			<dt class="col-sm-2">ID</dt>
+			<dd class="col-sm-10">@student.stud_id</dd>
 			<dt class="col-sm-2">birth_date</dt>
 			<dd class="col-sm-10">@student.birth_date</dd>
 			<dt class="col-sm-2">email</dt>
 			<dd class="col-sm-10">@student.email</dd>
 			<dt class="col-sm-2">phone</dt>
 			<dd class="col-sm-10">@student.phone</dd>
-			<dt class="col-sm-2">photo</dt>
+			<dt class="col-sm-2">group</dt>
+			<dd class="col-sm-10">@group?.group_name</dd>
+			<!--<dt class="col-sm-2">photo</dt>-->
 			@*<dd class="col-sm-10">@student.photo</dd>*@
-			@{
+			<!--@{
 				var src = ImageHelper.ToBase64ImageSrc(student.photo);
-			}
-			@if (src != null)
-			{
-				<img src="@src" alt="Photo" style="max-height: 200px; border-radius: 8px;" />
-			}
-			else
-			{
-				<span class="text-muted">No photo</span>
-			}
+				}
+				@if (src != null)
+				{
+					<img src="@src" alt="Photo" style="max-height: 200px; border-radius: 8px;" />
+				}
+				else
+				{
+					<span class="text-muted">No photo</span>
+				}-->
 		</dl>
 		<div>
 			<a href="@($"/students/edit?stud_id={student.stud_id}")">Edit</a> |
@@ -56,18 +56,24 @@
 
 @code {
 	private Student? student;
+	Group? group;
 
 	[SupplyParameterFromQuery]
 	private int stud_id { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
+
 		using var context = DbFactory.CreateDbContext();
 		student = await context.Students.FirstOrDefaultAsync(m => m.stud_id == stud_id);
 
 		if (student is null)
 		{
 			NavigationManager.NavigateTo("notfound");
+			return;
 		}
+
+		group = await context.Groups.FirstOrDefaultAsync(g => g.group_id == student.group);
+
 	}
 }

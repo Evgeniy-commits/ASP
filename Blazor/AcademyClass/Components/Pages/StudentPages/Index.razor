@@ -35,8 +35,8 @@
 <div>
 	<QuickGrid Class="table" Items="students" Pagination="pagination">
 		@*<PropertyColumn Property="student => student.last_name" />
-		<PropertyColumn Property="student => student.first_name" />
-		<PropertyColumn Property="student => student.middle_name" />*@
+		<PropertyColumn Property="student => student.first_name" />*@
+		<PropertyColumn Property="student => student.stud_id" />
 		<TemplateColumn Title="Name" Sortable="true" SortBy="SortByFullName">
 			@context.FullName
 		</TemplateColumn>

@@ -17,12 +17,6 @@
             <ValidationSummary class="text-danger" role="alert"/>
             <div class="mb-3">
                 <span class="text-danger">*</span>
-                <label for="group" class="form-label">group:</label> 
-                <InputNumber id="group" @bind-Value="Student.group" class="form-control" aria-required="true"/> 
-                <ValidationMessage For="() => Student.group" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <span class="text-danger">*</span>
                 <label for="last_name" class="form-label">last_name:</label> 
                 <InputText id="last_name" @bind-Value="Student.last_name" class="form-control" aria-required="true"/> 
                 <ValidationMessage For="() => Student.last_name" class="text-danger" /> 
@@ -54,10 +48,26 @@
                 <InputText id="phone" @bind-Value="Student.phone" class="form-control" /> 
                 <ValidationMessage For="() => Student.phone" class="text-danger" /> 
             </div>        
-            <div class="mb-3">
+            @*<div class="mb-3">
                 <label for="photo" class="form-label">photo:</label> 
                 <InputFile id="photo" @bind-Value="Student.photo" class="form-control" /> 
                 <ValidationMessage For="() => Student.photo" class="text-danger" /> 
+            </div>*@        
+            <div class="mb-3">
+                <span class="text-danger">*</span>
+                <label for="group" class="form-label">group:</label> 
+                @*<InputNumber id="group" @bind-Value="Student.group" class="form-control" aria-required="true"/>*@ 
+                <InputSelect id="group" @bind-Value="Student.group" class="form-control">
+                    <option selected disabled>--- Выберите группу ---</option>
+                    @using (AcademyClassContext context = DbFactory.CreateDbContext())
+                    {
+                        @foreach (Group group in context.Groups)
+                        {
+                            <option value="@group.group_id">@group.group_name</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Student.group" class="text-danger" /> 
             </div>        
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
