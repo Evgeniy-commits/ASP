@@ -1,50 +1,115 @@
-@page "/students"
+﻿@page "/students"
 @using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore.Query
 @using Microsoft.EntityFrameworkCore
 @using AcademyClass
 @using AcademyClass.Models
 @implements IAsyncDisposable
 @inject IDbContextFactory<AcademyClassContext> DbFactory
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Index</PageTitle>
 
 <h1>Index</h1>
 
 <p>
-    <a href="students/create">Create New</a>
+	<a href="students/create">Create New</a>
 </p>
 
-<QuickGrid Class="table" Items="students">
-    @*<PropertyColumn Property="student => student.last_name" />
-    <PropertyColumn Property="student => student.first_name" />
-    <PropertyColumn Property="student => student.middle_name" />*@
-    <PropertyColumn Property="student => student.FullName" />
-    <PropertyColumn Property="student => student.birth_date" />
-    @*<PropertyColumn Property="student => student.email" />
-    <PropertyColumn Property="student => student.phone" />*@
-    <PropertyColumn Property="student => student.photo" />
-    <PropertyColumn Property="student => student.Group.group_name" />
-    <PropertyColumn Property="student => student.Group.Direction.direction_name" />
+<div class="control">
+	<form action="/students">
+		<input type="search" name="Filter" />
+		<button type="submit" name="Search" class="btn btn-primary">Поиск</button>
+	</form>
+	<div>
+		<label for="items-per-page">Items per page</label>
+		<select id="item-per-page" @bind="pagination.ItemsPerPage">
+			<option value="5">5</option>
+			<option value="8">8</option>
+			<option value="10">10</option>
+		</select>
+	</div>
+</div>
 
-    <TemplateColumn Context="student">
-        @*<a href="@($"students/edit?stud_id={student.stud_id}")">Edit</a> |*@
-        <a href="@($"students/details?stud_id={student.stud_id}")">Details</a> @*|
-        <a href="@($"students/delete?stud_id={student.stud_id}")">Delete</a>*@
-    </TemplateColumn>
-</QuickGrid>
+<div>
+	<QuickGrid Class="table" Items="students" Pagination="pagination">
+		@*<PropertyColumn Property="student => student.last_name" />
+		<PropertyColumn Property="student => student.first_name" />
+		<PropertyColumn Property="student => student.middle_name" />*@
+		<TemplateColumn Title="Name" Sortable="true" SortBy="SortByFullName">
+			@context.FullName
+		</TemplateColumn>
+		<TemplateColumn Title="Age" Sortable="true" SortBy="SortByAge">
+			@context.Age
+		</TemplateColumn>
+		@*<PropertyColumn Property="student => student.email" />
+		<PropertyColumn Property="student => student.phone" />
+		<PropertyColumn Property="student => student.photo" />*@
+		<PropertyColumn Property="student => student.Group.group_name" Sortable="true" />
+		<PropertyColumn Property="student => student.Group.Direction.direction_name" Sortable="true" />
+
+		<TemplateColumn Context="student">
+			@*<a href="@($"students/edit?stud_id={student.stud_id}")">Edit</a> |*@
+			<a href="@($"students/details?stud_id={student.stud_id}")">Details</a> @*|
+			<a href="@($"students/delete?stud_id={student.stud_id}")">Delete</a>*@
+		</TemplateColumn>
+	</QuickGrid>
+
+	<Paginator State="pagination" />
+</div>
 
 @code {
-    private AcademyClassContext context = default!;
-    IQueryable<Student> students = default!;
-    protected override void OnInitialized()
-    {
-        context = DbFactory.CreateDbContext();
-        students = context
-                        .Students
-                        .Include(s => s.Group)
-                        .ThenInclude(g => g.Direction);
-    }
+	private AcademyClassContext? context;
+	private IQueryable<Student>? students;
 
-    public async ValueTask DisposeAsync() => await context.DisposeAsync();
+	[SupplyParameterFromQuery]
+	string? Filter { get; set; }
+
+	private PaginationState pagination = new() { ItemsPerPage = 5 };
+
+	// Сортировка по FullName через last_name в БД
+	private static GridSort<Student> SortByFullName =
+		GridSort<Student>.ByAscending(s => s.last_name).ThenAscending(s => s.first_name);
+
+	// Сортировка по Age через birth_date в БД (младше = больше возраст)
+	private static GridSort<Student> SortByAge =
+		GridSort<Student>.ByDescending(s => s.birth_date);
+
+	protected override void OnInitialized()
+	{
+		context = DbFactory.CreateDbContext();
+		students = GetFilteredStudents();
+	}
+
+	protected override void OnParametersSet()
+	{
+		// Пересчитываем данные при изменении query‑параметров или пагинации
+		students = GetFilteredStudents();
+	}
+
+	private IQueryable<Student> GetFilteredStudents()
+	{
+		string filter = Filter?.Trim() ?? string.Empty;
+		IIncludableQueryable<Student,Direction>? query = context?.Students
+			.Include(s => s.Group)
+			.ThenInclude(g => g.Direction);
+
+		if (string.IsNullOrEmpty(filter) || query == null)
+			return query ?? Enumerable.Empty<Student>().AsQueryable();
+
+		return query.Where(s =>
+			s.last_name.Contains(filter) ||
+			s.first_name.Contains(filter) ||
+			(s.middle_name != null && s.middle_name.Contains(filter)));
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		if (context != null)
+		{
+			await context.DisposeAsync();
+			context = null;
+		}
+	}
 }

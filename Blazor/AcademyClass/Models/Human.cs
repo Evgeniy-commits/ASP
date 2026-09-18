@@ -32,5 +32,24 @@ namespace AcademyClass.Models
         //Calc properties
         public string FullName
         { get => $"{last_name} {first_name} {middle_name}"; }
+
+        public int Age
+        {
+            get
+            {
+                if (birth_date is not null)
+                {
+                    DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+                    int age = today.Year - birth_date.Value.Year;
+
+                    // Корректировка, если день рождения ещё не наступил в этом году
+                    if (today < birth_date.Value.AddYears(age))
+                        age--;
+
+                    return age;
+                }
+                return 0;
+            }
+        }
     }
 }
