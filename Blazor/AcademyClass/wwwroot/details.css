@@ -6,12 +6,17 @@
 
 .details > div
 {
-    width: 35%;
+    width: 38%;
 }
 
-.photo-container > img
+.photo-container img
 {
-    width: 65%;
+    width: 100%;
+}
+.photo-container div
+{
+    min-height:128px;
+    border: solid 1px;
 }
 
 

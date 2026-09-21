@@ -7,16 +7,16 @@
 
 <PageTitle>Edit</PageTitle>
 
-<h1>Edit</h1>
 
-<h2>Student</h2>
-<hr />
+
 @if (Student is null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
+	<h1>@Student.FullName edit</h1>
+    <hr />
     <div class="row">
         <div class="col-md-10">
 			<EditForm method="post" Model="Student" OnValidSubmit="UpdateStudent" FormName="edit" Enhance>
@@ -76,11 +76,13 @@ else
 						</div>
 					</div>
 					<div class="photo-container">
-						@if (Student.photo != null)
-						{
-							<Photo image="@Student.photo" />
-						}
-						<InputFile OnChange="LoadPhoto" />
+						<div>
+							@if (Student.photo != null)
+							{
+								<Photo image="@Student.photo" />
+							}
+						</div>
+						<InputFile OnChange="LoadPhoto" />					
 					</div>
 				</div>
 				<button type="submit" class="btn btn-primary">Save</button>

@@ -36,10 +36,12 @@
 				<dd class="col-sm-10">@group?.group_name</dd>
 			</dl>
 			<div class="photo-container">
-				@if (student.photo != null)
-				{
-					<Photo image="@student.photo" />
-				}
+				<div>
+					@if (student.photo != null)
+					{
+						<Photo image="@student.photo" />
+					}
+				</div>
 			</div>
 		</div>
 		<div>

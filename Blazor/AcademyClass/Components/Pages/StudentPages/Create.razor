@@ -12,12 +12,12 @@
 <h2>Student</h2>
 <hr />
 <div class="row">
-	<div class="col-md-4">
+	<div class="col-md-10">
 		<EditForm method="post" Model="Student" OnValidSubmit="AddStudent" FormName="create" Enhance>
-			<div class="details">
-				<div>
 					<DataAnnotationsValidator />
 					<ValidationSummary class="text-danger" role="alert" />
+			<div class="details">
+				<div>
 					<div class="mb-3">
 						<span class="text-danger">*</span>
 						<label for="last_name" class="form-label">last_name:</label>
@@ -69,11 +69,13 @@
 					</div>
 				</div>
 				<div class="photo-container">
-					@if (Student.photo != null)
-					{
-						<Photo image="@Student.photo" />
-					}
-					<InputFile OnChange="LoadPhoto" />
+					<div>
+						@if (Student.photo != null)
+						{
+							<Photo image="@Student.photo" />
+						}
+					</div>
+					<InputFile OnChange="LoadPhoto" />				
 				</div>
 			</div>
 			<button type="submit" class="btn btn-primary">Create</button>
