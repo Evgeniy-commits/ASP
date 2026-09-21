@@ -73,14 +73,6 @@ else
 							<img src="@_newPhotoSrc" alt="New photo" style="max-height: 150px; border-radius: 4px;" />
 						</div>
 					}
-					@*<label class="form-label">Photo:</label>
-			@if (Student.Photo != null && Student.Photo.Length > 0)
-			{
-				var src = ImageHelper.ToBase64ImageSrc(Student.Photo, Student.PhotoMimeType ?? "image/jpeg");
-				<div class="mb-2">
-					<img src="@src" alt="Current photo" style="max-height: 150px; border-radius: 4px;" />
-				</div>
-			}*@
 					<InputFile OnChange="OnPhotoSelected" accept="image/*" class="form-control" />
 					<div class="text-muted small mt-1">Âûבונטעו פאיכ</div>
 				</div>
@@ -92,17 +84,6 @@ else
 						</button>
 					}
 				</div>
-				@*<div class="mb-3">
-			<label for="photo" class="form-label">Photo:</label>
-			<InputFile id="photo" OnChange="OnPhotoSelected" class="form-control" />
-			<ValidationMessage For="() => Student.Photo" class="text-danger" />
-			</div>*@
-					@*<div class="mb-3">
-				<label for="group" class="form-label">Group:</label>
-				<InputNumber id="group" @bind-Value="Student.Group" class="form-control" />
-				<ValidationMessage For="() => Student.Group" class="text-danger" />
-			</div>*@
-
 				<div class="mb-3">
 					<label for="group" class="form-label">Group:</label>
 					<InputSelect id="group" @bind-Value="Student.Group" class="form-control">
@@ -117,11 +98,6 @@ else
 					</InputSelect>
 					<ValidationMessage For="() => Student.Group" class="text-danger" />
 				</div>
-				@*<div class="mb-3">
-		<label for="groupnavigation" class="form-label">GroupNavigation:</label>
-		<InputNumber id="groupnavigation" @bind-Value="Student.GroupNavigation" class="form-control" />
-		<ValidationMessage For="() => Student.GroupNavigation" class="text-danger" />
-		</div>*@
 				<button type="submit" class="btn btn-primary">Save</button>
 				<a href="/students" class="btn btn-secondary">Cancel</a>
 			</EditForm>

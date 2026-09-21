@@ -13,6 +13,6 @@ namespace AcademyClass.Models
         public int group {  get; set; }
 
         //Nav Prop
-        public Group Group { get; set; }
+        public Group? Group { get; set; }
     }
 }

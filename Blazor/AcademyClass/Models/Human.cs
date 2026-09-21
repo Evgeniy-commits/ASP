@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿//#nullable disable
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AcademyClass.Models
@@ -8,11 +9,11 @@ namespace AcademyClass.Models
         [Required]
         [StringLength(50, MinimumLength = 2)]
         [RegularExpression("^[A-ZА-Я][a-zа-я]+$")]
-        public string last_name { get; set; }
+        public string? last_name { get; set; }
 
         [Required]
         [StringLength(50, MinimumLength = 2)]
-        public string first_name { get; set; }
+        public string? first_name { get; set; }
 
         public string? middle_name { get; set; }
 

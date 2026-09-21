@@ -19,7 +19,7 @@
 
 <div class="control">
 	<form action="/students">
-		<input type="search" name="Filter" />
+		<input type="search" name="Filter" value="@Filter" />
 		<button type="submit" name="Search" class="btn btn-primary">Поиск</button>
 	</form>
 	<div>
@@ -35,7 +35,7 @@
 <div>
 	<QuickGrid Class="table" Items="students" Pagination="pagination">
 		@*<PropertyColumn Property="student => student.last_name" />
-		<PropertyColumn Property="student => student.first_name" />*@
+			<PropertyColumn Property="student => student.first_name" />*@
 		<PropertyColumn Property="student => student.stud_id" />
 		<TemplateColumn Title="Name" Sortable="true" SortBy="SortByFullName">
 			@context.FullName
@@ -44,15 +44,15 @@
 			@context.Age
 		</TemplateColumn>
 		@*<PropertyColumn Property="student => student.email" />
-		<PropertyColumn Property="student => student.phone" />
-		<PropertyColumn Property="student => student.photo" />*@
+			<PropertyColumn Property="student => student.phone" />
+			<PropertyColumn Property="student => student.photo" />*@
 		<PropertyColumn Property="student => student.Group.group_name" Sortable="true" />
 		<PropertyColumn Property="student => student.Group.Direction.direction_name" Sortable="true" />
 
 		<TemplateColumn Context="student">
 			@*<a href="@($"students/edit?stud_id={student.stud_id}")">Edit</a> |*@
 			<a href="@($"students/details?stud_id={student.stud_id}")">Details</a> @*|
-			<a href="@($"students/delete?stud_id={student.stud_id}")">Delete</a>*@
+				<a href="@($"students/delete?stud_id={student.stud_id}")">Delete</a>*@
 		</TemplateColumn>
 	</QuickGrid>
 
@@ -60,7 +60,7 @@
 </div>
 
 @code {
-	private AcademyClassContext? context;
+	private AcademyClassContext context = default!;
 	private IQueryable<Student>? students;
 
 	[SupplyParameterFromQuery]
@@ -69,11 +69,11 @@
 	private PaginationState pagination = new() { ItemsPerPage = 5 };
 
 	// Сортировка по FullName через last_name в БД
-	private static GridSort<Student> SortByFullName =
+	private static readonly GridSort<Student> SortByFullName =
 		GridSort<Student>.ByAscending(s => s.last_name).ThenAscending(s => s.first_name);
 
 	// Сортировка по Age через birth_date в БД (младше = больше возраст)
-	private static GridSort<Student> SortByAge =
+	private static readonly GridSort<Student> SortByAge =
 		GridSort<Student>.ByDescending(s => s.birth_date);
 
 	protected override void OnInitialized()
@@ -91,12 +91,12 @@
 	private IQueryable<Student> GetFilteredStudents()
 	{
 		string filter = Filter?.Trim() ?? string.Empty;
-		IIncludableQueryable<Student,Direction>? query = context?.Students
+		IIncludableQueryable<Student, Direction> query = context.Students
 			.Include(s => s.Group)
 			.ThenInclude(g => g.Direction);
 
-		if (string.IsNullOrEmpty(filter) || query == null)
-			return query ?? Enumerable.Empty<Student>().AsQueryable();
+		if (string.IsNullOrEmpty(filter))
+			return query;
 
 		return query.Where(s =>
 			s.last_name.Contains(filter) ||
@@ -106,10 +106,11 @@
 
 	public async ValueTask DisposeAsync()
 	{
-		if (context != null)
-		{
-			await context.DisposeAsync();
-			context = null;
-		}
+		await context.DisposeAsync();
+		//if (context != null)
+		//{
+		//	await context.DisposeAsync();
+		//	//context = null;
+		//}
 	}
 }
