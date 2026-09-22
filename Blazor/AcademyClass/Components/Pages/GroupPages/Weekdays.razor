@@ -1,0 +1,60 @@
+﻿@using AcademyClass.Components.Pages.GroupPages
+@using AcademyClass.Models
+
+@if (IsDetailsMode)
+{
+	@*<h6>Learning days: </h6>*@
+	<div class="weekdays">@GetWeek().ToString()</div>
+}
+else
+{
+	@*<h6>Learning days: </h6>*@
+	<ul class="weekdays form-control">
+		@for (int i = 0; i < 7; i++)
+		{
+			int idx = i;
+			<li>
+				<!--<input type="checkbox" id="@Week.DAYNAMES[i]" @onchange="UpdateMask" />-->  @*@bind="@days[i]"*@
+				<input type="checkbox"
+					   id="@Week.DAYNAMES[idx]"
+					   checked="@days[idx]"
+					   @onchange="e => { days[idx] = e.Value is true; UpdateMask(); }" />
+				<label for="@Week.DAYNAMES[idx]">@Week.DAYNAMES[idx]</label>
+			</li>
+		}
+	</ul>
+	<input type="hidden" name="Group.learning_days" value="@(Group?.learning_days ?? 0)" />
+}
+
+@code
+{
+	bool[] days = new bool[7];
+
+	[Parameter]
+	public Models.Group? Group { get; set; }
+
+	[Parameter]
+	public bool IsDetailsMode { get; set; } = false;
+
+	protected override void OnParametersSet()
+	{
+		int mask = Group?.learning_days ?? 0;
+		for (int i = 0; i < 7; i++)
+			days[i] = ((mask >> i) & 1) != 0;
+	}
+
+	private void UpdateMask()
+	{
+		int mask = 0;
+
+		for (int i = 0; i < 7; i++)
+			if (days[i]) mask |= (1 << i);
+
+		if (Group is not null)
+			Group.learning_days = mask;
+
+		StateHasChanged();
+	}
+
+	private Week GetWeek() => new Week(Group?.learning_days ?? 0);
+}

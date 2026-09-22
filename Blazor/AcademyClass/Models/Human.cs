@@ -32,9 +32,11 @@ namespace AcademyClass.Models
         public byte[]? photo { get; set; }
 
         //Calc properties
+        [NotMapped]
         public string FullName
         { get => $"{last_name} {first_name} {middle_name}"; }
-
+        
+        [NotMapped]
         public int Age
         {
             get

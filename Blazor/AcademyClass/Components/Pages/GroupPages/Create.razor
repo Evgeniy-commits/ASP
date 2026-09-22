@@ -3,6 +3,7 @@
 @using AcademyClass.Models
 @inject IDbContextFactory<AcademyClassContext> DbFactory
 @inject NavigationManager NavigationManager
+@rendermode InteractiveServer
 
 <PageTitle>Create</PageTitle>
 
@@ -11,7 +12,7 @@
 <h2>Group</h2>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-10">
         <EditForm method="post" Model="Group" OnValidSubmit="AddGroup" FormName="create" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert"/>
@@ -38,19 +39,20 @@
 				</InputSelect>
 				<ValidationMessage For="() => Group.direction" class="text-danger" />
 			</div>        
-            <div class="mb-3">
-                <label for="learning_days" class="form-label">learning_days:</label> 
-                <InputNumber id="learning_days" @bind-Value="Group.learning_days" class="form-control" /> 
-                <ValidationMessage For="() => Group.learning_days" class="text-danger" /> 
-            </div>        
+			<div class="mb-3">
+				<label for="learning_days" class="form-label">learning_days:</label>
+				@*<InputNumber id="learning_days" @bind-Value="Group.learning_days" class="form-control" />*@
+				<Weekdays Group="Group" IsDetailsMode="false" />
+				<ValidationMessage For="() => Group.learning_days" class="text-danger" />
+			</div>        
             <div class="mb-3">
                 <label for="start_time" class="form-label">start_time:</label> 
-                <InputDate id="start_time" @bind-Value="Group.start_time" class="form-control" /> 
+                <input type="time" id="start_time" @bind="Group.start_time" class="form-control" /> 
                 <ValidationMessage For="() => Group.start_time" class="text-danger" /> 
             </div>        
             <div class="mb-3">
                 <label for="start_date" class="form-label">start_date:</label> 
-                <InputDate id="start_date" @bind-Value="Group.start_date" class="form-control" /> 
+                <input type="date" id="start_date" @bind="Group.start_date" class="form-control" /> 
                 <ValidationMessage For="() => Group.start_date" class="text-danger" /> 
             </div>        
             <button type="submit" class="btn btn-primary">Create</button>

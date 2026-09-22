@@ -1,0 +1,72 @@
+@page "/teachers"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Microsoft.EntityFrameworkCore
+@using AcademyClass.Models
+@implements IAsyncDisposable
+@inject IDbContextFactory<AcademyClassContext> DbFactory
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Index</PageTitle>
+
+<h1>Index</h1>
+
+<p>
+    <a href="teachers/create">Create New</a>
+</p>
+
+<div>
+	<QuickGrid Class="table" Items="teachers">
+		<PropertyColumn Property="teacher => teacher.teacher_id" />
+		<PropertyColumn Property="teacher => teacher.FullName" />
+		@*<PropertyColumn Property="teacher => teacher.Age" />
+		<PropertyColumn Property="teacher => teacher.last_name" />
+		<PropertyColumn Property="teacher => teacher.first_name" />
+		<PropertyColumn Property="teacher => teacher.middle_name" />*@
+		<PropertyColumn Property="teacher => teacher.birth_date" />
+		<PropertyColumn Property="teacher => teacher.WorkSince" />
+		<PropertyColumn Property="teacher => teacher.Rate" />
+		@*<PropertyColumn Property="teacher => teacher.group" />
+		<PropertyColumn Property="teacher => teacher.Group" />*@
+		<PropertyColumn Property="teacher => teacher.email" />
+		<PropertyColumn Property="teacher => teacher.phone" />
+		@*<PropertyColumn Property="teacher => teacher.photo" />*@
+	<TemplateColumn Title="Photo" Context="t">
+		@{
+			string? src = null;
+			if (t.photo != null)
+			{
+				// t.photo должно быть byte[]
+				src = $"data:png;base64,{Convert.ToBase64String(t.photo)}";
+			}
+		}
+		@if (src != null)
+		{
+			<img src="@src" alt="Photo" style="max-width: 50px; height: auto; border-radius: 4px;" />
+		}
+		else
+		{
+			<span class="text-muted">Ч</span>
+		}
+	</TemplateColumn>
+		<TemplateColumn Context="teacher">
+			@*<a href="@($"teachers/edit?teacher_id={teacher.teacher_id}")">Edit</a> |*@
+			<a href="@($"teachers/details?teacher_id={teacher.teacher_id}")">Details</a>
+			@*| <a href="@($"teachers/delete?teacher_id={teacher.teacher_id}")">Delete</a>*@
+		</TemplateColumn>
+	</QuickGrid>
+</div>
+
+@code 
+{	
+	private AcademyClassContext context = default!;
+	private IQueryable<Teacher>? teachers;
+
+	protected override void OnInitialized()
+	{
+		context = DbFactory.CreateDbContext();
+		teachers = context.Teachers;
+	}
+
+	public async ValueTask DisposeAsync() => await context.DisposeAsync();
+}

@@ -1,0 +1,167 @@
+@page "/teachers/edit"
+@using Microsoft.EntityFrameworkCore
+@using AcademyClass.Models
+@inject IDbContextFactory<AcademyClassContext> DbFactory
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Edit</PageTitle>
+
+@if (Teacher is null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<h1>@Teacher.FullName edit</h1>
+	<hr />
+	<div class="row">
+		<div class="col-md-10">
+			<EditForm method="post" Model="Teacher" OnValidSubmit="UpdateTeacher" FormName="edit" Enhance>
+				<DataAnnotationsValidator />
+				<ValidationSummary role="alert" />
+				<div class="details">
+					<div>
+						<input type="hidden" name="Teacher.teacher_id" value="@Teacher.teacher_id" />
+						@*<div class="mb-3">
+			<span class="text-danger">*</span>
+			<label for="group" class="form-label">group:</label>
+			<InputNumber id="group" @bind-Value="Teacher.group" class="form-control" aria-required="true" />
+			<ValidationMessage For="() => Teacher.group" class="text-danger" />
+		</div>
+		<div class="mb-3">
+			<label for="group" class="form-label">Group:</label>
+			<InputText id="group" @bind-Value="Teacher.Group" class="form-control" />
+			<ValidationMessage For="() => Teacher.Group" class="text-danger" />
+		</div>*@
+						<div class="mb-3">
+							<span class="text-danger">*</span>
+							<label for="last_name" class="form-label">last_name:</label>
+							<InputText id="last_name" @bind-Value="Teacher.last_name" class="form-control" aria-required="true" />
+							<ValidationMessage For="() => Teacher.last_name" class="text-danger" />
+						</div>
+						<div class="mb-3">
+							<span class="text-danger">*</span>
+							<label for="first_name" class="form-label">first_name:</label>
+							<InputText id="first_name" @bind-Value="Teacher.first_name" class="form-control" aria-required="true" />
+							<ValidationMessage For="() => Teacher.first_name" class="text-danger" />
+						</div>
+						<div class="mb-3">
+							<label for="middle_name" class="form-label">middle_name:</label>
+							<InputText id="middle_name" @bind-Value="Teacher.middle_name" class="form-control" />
+							<ValidationMessage For="() => Teacher.middle_name" class="text-danger" />
+						</div>
+
+						<div class="mb-3">
+							<span class="text-danger">*</span>
+							<label for="birth_date" class="form-label">birth_date:</label>
+							<InputDate id="birth_date" @bind-Value="Teacher.birth_date" class="form-control" aria-required="true" />
+							<ValidationMessage For="() => Teacher.birth_date" class="text-danger" />
+						</div>
+						<div class="mb-3">
+							<label for="email" class="form-label">email:</label>
+							<InputText id="email" @bind-Value="Teacher.email" class="form-control" />
+							<ValidationMessage For="() => Teacher.email" class="text-danger" />
+						</div>
+						<div class="mb-3">
+							<label for="phone" class="form-label">phone:</label>
+							<InputText id="phone" @bind-Value="Teacher.phone" class="form-control" />
+							<ValidationMessage For="() => Teacher.phone" class="text-danger" />
+						</div>
+						<div class="mb-3">
+							<label for="worksince" class="form-label">WorkSince:</label>
+							<InputDate id="worksince" @bind-Value="Teacher.WorkSince" class="form-control" />
+							<ValidationMessage For="() => Teacher.WorkSince" class="text-danger" />
+						</div>
+						<div class="mb-3">
+							<label for="rate" class="form-label">Rate:</label>
+							<InputNumber id="rate" @bind-Value="Teacher.Rate" class="form-control" />
+							<ValidationMessage For="() => Teacher.Rate" class="text-danger" />
+						</div>
+					</div>
+
+					<div class="photo-container">
+						<div>
+							@if (Teacher.photo != null)
+							{
+								<Photo image="@Teacher.photo" />
+							}
+						</div>
+						<InputFile OnChange="LoadPhoto" />
+					</div>
+				</div>
+				
+				<button type="submit" class="btn btn-primary">Save</button>
+			</EditForm>
+		</div>
+	</div>
+}
+
+<div>
+	<a href="/teachers">Back to List</a>
+</div>
+
+@code 
+{
+	[SupplyParameterFromQuery]
+	private int teacher_id { get; set; }
+
+	[SupplyParameterFromForm]
+	private Teacher? Teacher { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		using var context = DbFactory.CreateDbContext();
+		Teacher ??= await context.Teachers.FirstOrDefaultAsync(m => m.teacher_id == teacher_id);
+
+		if (Teacher is null)
+		{
+			NavigationManager.NavigateTo("notfound");
+		}
+	}
+
+	// Load Photo //
+	IBrowserFile URL { get; set; } = default!;
+	async Task LoadPhoto(InputFileChangeEventArgs e)
+	{
+		URL = e.File;
+		if (URL == null || URL.Size == 0) return;
+		//URL.OpenReadStream();
+		MemoryStream ms = new MemoryStream();
+		await URL.OpenReadStream().CopyToAsync(ms);
+		byte[] raw_data = ms.ToArray();
+		Teacher.photo = raw_data;
+	}
+
+	// To protect from overposting attacks, enable the specific properties you want to bind to.
+	// For more information, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+	private async Task UpdateTeacher()
+	{
+		using var context = DbFactory.CreateDbContext();
+		context.Attach(Teacher!).State = EntityState.Modified;
+
+		try
+		{
+			await context.SaveChangesAsync();
+		}
+		catch (DbUpdateConcurrencyException)
+		{
+			if (!TeacherExists(Teacher!.teacher_id))
+			{
+				NavigationManager.NavigateTo("notfound");
+			}
+			else
+			{
+				throw;
+			}
+		}
+
+		NavigationManager.NavigateTo("/teachers");
+	}
+
+	private bool TeacherExists(int teacher_id)
+	{
+		using var context = DbFactory.CreateDbContext();
+		return context.Teachers.Any(e => e.teacher_id == teacher_id);
+	}
+}

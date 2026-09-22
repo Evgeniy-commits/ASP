@@ -22,7 +22,7 @@
 	<PropertyColumn Property="group => group.Direction.direction_name" />
 	@*<PropertyColumn Property="group => group.learning_days" />*@
 	<TemplateColumn Title="learning_days" Context="group">
-		@WeekDayHelper.GetSelectedDaysString(group.learning_days)
+		<Weekdays Group="group" IsDetailsMode="true" />
 	</TemplateColumn>
 	<PropertyColumn Property="group => group.start_time" />
 	<PropertyColumn Property="group => group.start_date" />

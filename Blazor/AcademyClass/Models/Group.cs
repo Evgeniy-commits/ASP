@@ -22,7 +22,7 @@ public class Group
     public int direction { get; set; } 
 
     [Column("weekdays", TypeName = "TINYINT")]
-    public int? learning_days { get; set; } 
+    public int? learning_days { get; set; }
 
     public TimeOnly? start_time { get; set; }
 
