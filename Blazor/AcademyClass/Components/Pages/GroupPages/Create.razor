@@ -12,23 +12,23 @@
 <h2>Group</h2>
 <hr />
 <div class="row">
-    <div class="col-md-10">
-        <EditForm method="post" Model="Group" OnValidSubmit="AddGroup" FormName="create" Enhance>
-            <DataAnnotationsValidator />
-            <ValidationSummary class="text-danger" role="alert"/>
-            <div class="mb-3">
-                <span class="text-danger">*</span>
-                <label for="group_name" class="form-label">group_name:</label> 
-                <InputText id="group_name" @bind-Value="Group.group_name" class="form-control" aria-required="true"/> 
-                <ValidationMessage For="() => Group.group_name" class="text-danger" /> 
-            </div>        
+	<div class="col-md-4">
+		<EditForm method="post" Model="Group" OnValidSubmit="AddGroup" FormName="create" Enhance>
+			<DataAnnotationsValidator />
+			<ValidationSummary class="text-danger" role="alert" />
+			<div class="mb-3">
+				<span class="text-danger">*</span>
+				<label for="group_name" class="form-label">group_name:</label>
+				<InputText id="group_name" @bind-Value="Group.group_name" class="form-control" aria-required="true" />
+				<ValidationMessage For="() => Group.group_name" class="text-danger" />
+			</div>
 			<div class="mb-3">
 				<span class="text-danger">*</span>
 				<label for="direction" class="form-label">direction:</label>
 				@*<InputNumber id="direction" @bind-Value="Group.direction" class="form-control" aria-required="true"/>*@
-          
+
 				<InputSelect id="direction" @bind-Value="Group.direction" class="form-control">
-                    <option disabled selected> --- Выберите направление обучения --- </option>
+					<option disabled selected> --- Выберите направление обучения --- </option>
 					@using (AcademyClassContext context = DbFactory.CreateDbContext())
 					{
 						@foreach (Direction d in context.Directions)
@@ -38,44 +38,44 @@
 					}
 				</InputSelect>
 				<ValidationMessage For="() => Group.direction" class="text-danger" />
-			</div>        
+			</div>
 			<div class="mb-3">
 				<label for="learning_days" class="form-label">learning_days:</label>
 				@*<InputNumber id="learning_days" @bind-Value="Group.learning_days" class="form-control" />*@
-				<Weekdays Group="Group" IsDetailsMode="false" />
 				<ValidationMessage For="() => Group.learning_days" class="text-danger" />
-			</div>        
-            <div class="mb-3">
-                <label for="start_time" class="form-label">start_time:</label> 
-                <input type="time" id="start_time" @bind="Group.start_time" class="form-control" /> 
-                <ValidationMessage For="() => Group.start_time" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="start_date" class="form-label">start_date:</label> 
-                <input type="date" id="start_date" @bind="Group.start_date" class="form-control" /> 
-                <ValidationMessage For="() => Group.start_date" class="text-danger" /> 
-            </div>        
-            <button type="submit" class="btn btn-primary">Create</button>
-        </EditForm>
-    </div>
+			</div>
+			<Weekdays Group="@Group" IsDetailsMode="false" />
+			<div class="mb-3">
+				<label for="start_time" class="form-label">start_time:</label>
+				<input type="time" id="start_time" @bind="Group.start_time" class="form-control" />
+				<ValidationMessage For="() => Group.start_time" class="text-danger" />
+			</div>
+			<div class="mb-3">
+				<label for="start_date" class="form-label">start_date:</label>
+				<input type="date" id="start_date" @bind="Group.start_date" class="form-control" />
+				<ValidationMessage For="() => Group.start_date" class="text-danger" />
+			</div>
+			<button type="submit" class="btn btn-primary">Create</button>
+		</EditForm>
+	</div>
 </div>
 
 <div>
-    <a href="/groups">Back to List</a>
+	<a href="/groups">Back to List</a>
 </div>
 
 @code {
-    [SupplyParameterFromForm]
-    private Group Group { get; set; } = default!;
+	[SupplyParameterFromForm]
+	private Group Group { get; set; } = default!;
 
-    protected override void OnInitialized() => Group ??= new();
+	protected override void OnInitialized() => Group ??= new();
 
-    // To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
-    private async Task AddGroup()
-    {
-        using var context = DbFactory.CreateDbContext();
-        context.Groups.Add(Group);
-        await context.SaveChangesAsync();
-        NavigationManager.NavigateTo("/groups");
-    }
+	// To protect from overposting attacks, see https://learn.microsoft.com/aspnet/core/blazor/forms/#mitigate-overposting-attacks.
+	private async Task AddGroup()
+	{
+		using var context = DbFactory.CreateDbContext();
+		context.Groups.Add(Group);
+		await context.SaveChangesAsync();
+		NavigationManager.NavigateTo("/groups");
+	}
 }
