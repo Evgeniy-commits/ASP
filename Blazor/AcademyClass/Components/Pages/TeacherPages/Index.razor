@@ -32,17 +32,10 @@
 		<PropertyColumn Property="teacher => teacher.phone" />
 		@*<PropertyColumn Property="teacher => teacher.photo" />*@
 	<TemplateColumn Title="Photo" Context="t">
-		@{
-			string? src = null;
-			if (t.photo != null)
-			{
-				// t.photo должно быть byte[]
-				src = $"data:png;base64,{Convert.ToBase64String(t.photo)}";
-			}
-		}
-		@if (src != null)
+		
+		@if (t.photo != null)
 		{
-			<img src="@src" alt="Photo" style="max-width: 50px; height: auto; border-radius: 4px;" />
+			<Photo image="@t.photo" IsDetailsPhoto="true" />
 		}
 		else
 		{
