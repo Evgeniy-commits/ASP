@@ -20,6 +20,6 @@ namespace AcademyClass.Models
         //public int group { get; set; }
 
         //Nav Prop
-        //public Group? Group { get; set; }
+        public ICollection<TeachersDisciplinesRelation> DisciplinesRelations { get; set; } = default!;
     }
 }
