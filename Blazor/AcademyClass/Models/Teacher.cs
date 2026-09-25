@@ -19,7 +19,7 @@ namespace AcademyClass.Models
         //[ForeignKey(nameof(Group))]
         //public int group { get; set; }
 
-        ////Nav Prop
+        //Nav Prop
         //public Group? Group { get; set; }
     }
 }
