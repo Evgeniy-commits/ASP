@@ -28,7 +28,17 @@
             <dt class="col-sm-2">start_date</dt>
             <dd class="col-sm-10">@group?.start_date</dd>
         </dl>
-
+        <hr />
+        <ul>
+            @foreach (Student student in group.Students)
+            {
+                <li>
+                    <a href="@($"/students/details?stud_id={student.stud_id}")">
+                       @student.FullName
+                    </a>
+                </li>
+            }
+        </ul>
 
         <div>
             <a href="@($"/groups/edit?group_id={group?.group_id}")">Edit</a> |
@@ -49,6 +59,7 @@
         group = await context
                         .Groups
                         .Include(g=>g.Direction)
+                        .Include(g=>g.Students)
                         .FirstOrDefaultAsync(m => m.group_id == group_id);
         //group = await context.Groups.FirstOrDefaultAsync(m => m.group_id == group_id);
 
