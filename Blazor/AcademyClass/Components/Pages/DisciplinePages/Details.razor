@@ -9,24 +9,38 @@
 <h1>Details</h1>
 
 <div>
-    <h2>Discipline</h2>
-    <hr />
-    @if (discipline is null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else {
-        <dl class="row">
-            <dt class="col-sm-2">discipline_name</dt>
-            <dd class="col-sm-10">@discipline.discipline_name</dd>
-            <dt class="col-sm-2">number_of_lessons</dt>
-            <dd class="col-sm-10">@discipline.number_of_lessons</dd>
-        </dl>
-        <div>
-            <a href="@($"/disciplines/edit?discipline_id={discipline.discipline_id}")">Edit</a> |
-            <a href="@($"/disciplines")">Back to List</a>
-        </div>
-    }
+	<h2>Discipline</h2>
+	<hr />
+	@if (discipline is null)
+	{
+		<p><em>Loading...</em></p>
+	}
+	else
+	{
+		<dl class="row">
+			<dt class="col-sm-2">discipline_name</dt>
+			<dd class="col-sm-10">@discipline.discipline_name</dd>
+			<dt class="col-sm-2">number_of_lessons</dt>
+			<dd class="col-sm-10">@discipline.number_of_lessons</dd>
+		</dl>
+		<div>
+			<h3>Преподаватели</h3>
+			<ul>
+				@foreach (TeachersDisciplinesRelation tdr in discipline.TeachersRelations)
+				{
+					<li>
+						<a href="@($"/teachers/details?teacher_id={tdr?.Teacher?.teacher_id}")" target="_blank">
+							@tdr?.Teacher?.FullName
+						</a>
+					</li>
+				}
+			</ul>
+		</div>
+		<div>
+			<a href="@($"/disciplines/edit?discipline_id={discipline.discipline_id}")">Edit</a> |
+			<a href="@($"/disciplines")">Back to List</a>
+		</div>
+	}
 </div>
 
 @code {
@@ -38,7 +52,10 @@
     protected override async Task OnInitializedAsync()
     {
         using var context = DbFactory.CreateDbContext();
-        discipline = await context.Disciplines.FirstOrDefaultAsync(m => m.discipline_id == discipline_id);
+        discipline = await context.Disciplines
+            .Include(d => d.TeachersRelations)
+            .ThenInclude(tdr => tdr.Teacher)
+            .FirstOrDefaultAsync(m => m.discipline_id == discipline_id);
 
         if (discipline is null)
         {
