@@ -1,5 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace AcademyClass.Models
 {
@@ -16,7 +18,11 @@ namespace AcademyClass.Models
         public decimal? Rate { get; set; }
 
         //Nav Prop
-        public ICollection<TeachersDisciplinesRelation> DisciplinesRelations { get; set; } = default!;
+
+        //[JsonIgnore]
+        //public ICollection<TeachersDisciplinesRelation> DisciplinesRelations { get; set; } = default!;
+
+        public ObservableCollection<TeachersDisciplinesRelation> DisciplinesRelations { get; set; } = default!;
 
         //Calc properties
         public record ExpInfo(int Years, int Months)
