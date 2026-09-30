@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ContosoUniversity.Migrations
 {
     /// <inheritdoc />
-    public partial class mssqllocal_migration_587 : Migration
+    public partial class mssqllocal_migration_535 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

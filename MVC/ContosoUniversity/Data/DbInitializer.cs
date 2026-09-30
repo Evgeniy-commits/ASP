@@ -1,9 +1,8 @@
-﻿//#define DB_INIT_1
-//#define DB_INIT_2
+﻿#define DB_INIT_1
 
 #if DB_INIT_1
-using RazorPages.Data;
-using RazorPages.Models;
+using ContosoUniversity.Data;
+using ContosoUniversity.Models;
 
 namespace ContosoUniversity.Data
 {
