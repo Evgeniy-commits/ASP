@@ -19,7 +19,7 @@
                 @Html.DisplayNameFor(model => model.FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EnrollmentDate)
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]"> @Html.DisplayNameFor(model => model.EnrollmentDate)</a>
             </th>
             @*<th>
                 @Html.DisplayNameFor(model => model.Enrollments)

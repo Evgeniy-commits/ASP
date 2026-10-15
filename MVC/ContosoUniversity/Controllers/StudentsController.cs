@@ -18,7 +18,7 @@ public class StudentsController : Controller
         ViewData["NameSortParam"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
         ViewData["DateSortParam"] = sortOrder == "Date" ? "date_desc" : "Date";
 
-        IEnumerable<Student> students = from student in _context.Students select student;
+        IQueryable<Student> students = from student in _context.Students select student;
 
         switch (sortOrder)
         {
@@ -28,7 +28,8 @@ public class StudentsController : Controller
             default:          students = students.OrderBy(s => s.LastName);                 break;
         }
 
-        return View(await _context.Students.ToListAsync());
+        return View(await students.AsNoTracking().ToListAsync());
+        //return View(await _context.Students.ToListAsync());
     }
 
     // GET: STUDENTS/Details/5
