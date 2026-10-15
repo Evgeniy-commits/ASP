@@ -9,6 +9,15 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-action="Index" method="get">
+	<div>
+		<lable>Поиск по имени: <input type="search" name="SearchString" value="@ViewData["CurrentFilter"]" /></lable>
+		<input type="submit" value="Найти" class="btn btn-primary" />
+		<a asp-action="Index" class="btn btn-secondary">Сброс</a>
+	</div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
