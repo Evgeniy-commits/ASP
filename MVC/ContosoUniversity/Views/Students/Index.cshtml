@@ -87,11 +87,11 @@
 		{
 			@if (i + 1 == Model.PageIndex)
 			{
-				<a asp-action="Index" asp-route-pageNumber="@(i + 1)"><div class="page current-page">@(i + 1)</div></a>
+				<a asp-action="Index" asp-route-pageNumber="@(i + 1)" class="page current-page">@(i + 1)</a>
 			}
 			else
 			{
-				<a asp-action="Index" asp-route-pageNumber="@(i + 1)"><div class="page">@(i + 1)</div></a>
+				<a asp-action="Index" asp-route-pageNumber="@(i + 1)" class="page">@(i + 1)</a>
 			}
 		}
 	</div>

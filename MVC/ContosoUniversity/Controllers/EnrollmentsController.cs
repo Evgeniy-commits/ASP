@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ContosoUniversity.Models;
+using ContosoUniversity;
 
 public class EnrollmentsController : Controller
 {
@@ -13,21 +14,34 @@ public class EnrollmentsController : Controller
     }
 
     // GET: ENROLLMENTS
-    public async Task<IActionResult> Index()    
+    public async Task<IActionResult> Index(int? pageNumber)    
     {
-        return View(await _context.Enrollments.ToListAsync());
+        var ContosoContext = _context.Enrollments
+                                        .Include(e => e.Course)
+                                        .Include(e => e.Student);
+        int pageSize = 3;
+        //return View(await _context.Enrollments.ToListAsync());
+        return View
+            (
+                await PaginatedList<Enrollment>.CreateAsync
+                (
+                    ContosoContext.AsNoTracking(),
+                    pageNumber ?? 1,
+                    pageSize
+                )
+            );
     }
 
     // GET: ENROLLMENTS/Details/5
-    public async Task<IActionResult> Details(int? enrollmentid)
+    public async Task<IActionResult> Details(int? id)
     {
-        if (enrollmentid == null)
+        if (id == null)
         {
             return NotFound();
         }
 
         var enrollment = await _context.Enrollments
-            .FirstOrDefaultAsync(m => m.EnrollmentID == enrollmentid);
+            .FirstOrDefaultAsync(m => m.EnrollmentID == id);
         if (enrollment == null)
         {
             return NotFound();
@@ -59,14 +73,14 @@ public class EnrollmentsController : Controller
     }
 
     // GET: ENROLLMENTS/Edit/5
-    public async Task<IActionResult> Edit(int? enrollmentid)
+    public async Task<IActionResult> Edit(int? id)
     {
-        if (enrollmentid == null)
+        if (id == null)
         {
             return NotFound();
         }
 
-        var enrollment = await _context.Enrollments.FindAsync(enrollmentid);
+        var enrollment = await _context.Enrollments.FindAsync(id);
         if (enrollment == null)
         {
             return NotFound();
@@ -79,9 +93,9 @@ public class EnrollmentsController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int? enrollmentid, [Bind("EnrollmentID,CourseID,StudentID,Grade,Course,Student")] Enrollment enrollment)
+    public async Task<IActionResult> Edit(int? id, [Bind("EnrollmentID,CourseID,StudentID,Grade,Course,Student")] Enrollment enrollment)
     {
-        if (enrollmentid != enrollment.EnrollmentID)
+        if (id != enrollment.EnrollmentID)
         {
             return NotFound();
         }
@@ -110,15 +124,15 @@ public class EnrollmentsController : Controller
     }
 
     // GET: ENROLLMENTS/Delete/5
-    public async Task<IActionResult> Delete(int? enrollmentid)
+    public async Task<IActionResult> Delete(int? id)
     {
-        if (enrollmentid == null)
+        if (id == null)
         {
             return NotFound();
         }
 
         var enrollment = await _context.Enrollments
-            .FirstOrDefaultAsync(m => m.EnrollmentID == enrollmentid);
+            .FirstOrDefaultAsync(m => m.EnrollmentID == id);
         if (enrollment == null)
         {
             return NotFound();
@@ -130,9 +144,9 @@ public class EnrollmentsController : Controller
     // POST: ENROLLMENTS/Delete/5
     [HttpPost, ActionName("Delete")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int? enrollmentid)
+    public async Task<IActionResult> DeleteConfirmed(int? id)
     {
-        var enrollment = await _context.Enrollments.FindAsync(enrollmentid);
+        var enrollment = await _context.Enrollments.FindAsync(id);
         if (enrollment != null)
         {
             _context.Enrollments.Remove(enrollment);
@@ -142,8 +156,8 @@ public class EnrollmentsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private bool EnrollmentExists(int? enrollmentid)
+    private bool EnrollmentExists(int? id)
     {
-        return _context.Enrollments.Any(e => e.EnrollmentID == enrollmentid);
+        return _context.Enrollments.Any(e => e.EnrollmentID == id);
     }
 }

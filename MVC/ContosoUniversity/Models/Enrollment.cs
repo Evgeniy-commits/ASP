@@ -1,4 +1,7 @@
-﻿namespace ContosoUniversity.Models
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ContosoUniversity.Models
 {
     public enum Grade { A, B, C, D, F } 
 
