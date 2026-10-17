@@ -1,4 +1,5 @@
-@model IEnumerable<ContosoUniversity.Models.Student>
+@*@model IEnumerable<ContosoUniversity.Models.Student>*@
+@model PaginatedList<Student>
 
 @{
     ViewData["Title"] = "Index";
@@ -22,13 +23,16 @@
     <thead>
         <tr>
             <th>
-				<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]">@Html.DisplayNameFor(model => model.LastName)</a>
+				@*<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]">@Html.DisplayNameFor(model => model.LastName)</a>*@
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]">LastName</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @*@Html.DisplayNameFor(model => model.FirstName)*@
+                First Name
             </th>
             <th>
-				<a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]"> @Html.DisplayNameFor(model => model.EnrollmentDate)</a>
+				@*<a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]"> @Html.DisplayNameFor(model => model.EnrollmentDate)</a>*@
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]">EnrollmentDate</a>
             </th>
             @*<th>
                 @Html.DisplayNameFor(model => model.Enrollments)
@@ -60,3 +64,23 @@
 }
     </tbody>
 </table>
+
+
+@{
+    string prevDisabled = Model.HasPreviosPage ? "" : "disabled";
+    string nextDisabled = Model.HasNextPage ? "" : "disabled";
+}
+
+<a asp-action="Index"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previos
+</a>
+
+<a asp-action="Index"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+	Next
+</a>
