@@ -1,0 +1,152 @@
+@*@model IEnumerable<ContosoUniversity.Models.Instructor>*@
+@model ContosoUniversity.Models.ViewModels.InstructorIndexData
+
+@{
+    ViewData["Title"] = "Instructors";
+}
+
+<h1>Instructors</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Last name
+            </th>
+            <th>
+                First name
+            </th>
+            <th>
+                Hire date
+            </th>
+            <th>
+                Office
+            </th>
+            <th>
+                Courses
+            </th>
+            @*<th>
+                @Html.DisplayNameFor(model => model.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.HireDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CourseAssignments)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.OfficeAssignment)
+            </th>*@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Instructor item in Model.Instructors)
+        {
+            string selectedRow = "";
+            if (item.ID == (int?)ViewData["InstructorID"]) selectedRow = "table-success";
+        
+            <tr class="selectedRow">
+                <td>
+                    @Html.DisplayFor(model => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.HireDate)
+                </td>
+                @*<td>
+                    @Html.DisplayFor(model => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.CourseAssignments)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.OfficeAssignment)
+                </td>*@
+                <td>
+                    <a asp-action="Index" asp-route-id="@item.ID">Select</a> |
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+                <td>
+                    @if(item.OfficeAssignment != null)
+                    {
+                        @item.OfficeAssignment.Location;
+                    }
+                </td>
+                <td>
+                    @foreach (CourseAssignment ca in item.CourseAssignments)
+                    {
+                        @ca.Course.CourseID @ca.Course.Title <br/>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if(Model.Courses != null)
+{
+    <h3>Курсы, которые ведет выбранный инструктор:</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Number</th>
+                <th>Title</th>
+                <th>Department</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach(Course course in Model.Courses)
+            {
+                string selectedRow = "";
+                if (course.CourseID == (int?)ViewData["CourseID"]) selectedRow = "table-success";
+                <tr class="selectedRow">
+                    <td>@Html.ActionLink("Select", "Index", new {courseID = course.CourseID})</td>
+                    <td>@course.CourseID</td>
+                    <td>@course.Title</td>
+                    <td>@course.Department?.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if(Model.Enrollments != null)
+{
+    <h3>Студенты, прошедшие курс</h3>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Студент</th>
+				<th>Оценка</th>
+			</tr>
+		</thead>
+
+		<tbody>
+			@foreach (Enrollment enrollment in Model.Enrollments)
+            {
+                //string selectedRow = "";
+                //if (course.CourseID == (int?)ViewData["CourseID"]) selectedRow = "table-success";
+				<tr>
+					<td>@enrollment.Student.FullName</td>
+					<td>@enrollment.Grade</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
