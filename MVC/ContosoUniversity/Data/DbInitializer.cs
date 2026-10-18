@@ -1,4 +1,4 @@
-﻿#define DB_INIT_1
+﻿#define DB_INIT_2
 
 #if DB_INIT_1
 using ContosoUniversity.Data;
@@ -69,8 +69,8 @@ namespace ContosoUniversity.Data
 #endif
 
 #if DB_INIT_2
-using RazorPages.Data;
-using RazorPages.Models;
+using ContosoUniversity.Data;
+using ContosoUniversity.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

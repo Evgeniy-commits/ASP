@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ContosoUniversity.Models
 {
-    public class OfficeAssingnment
+    public class OfficeAssignment
     {
         public int InstructorID { get; set; }
 

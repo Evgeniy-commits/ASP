@@ -21,6 +21,10 @@ namespace ContosoUniversity.Models
         [DisplayName("Дата запуска")]
         public DateTime StartDate { get; set; }
 
+        public int? InstructorID { get; set; }
+
         //Navigation properties:
+        public Instructor? Administrator { get; set; }
+        public ICollection<Course>? Courses { get; set; }
     }
 }
