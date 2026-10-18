@@ -87,9 +87,9 @@
                     }
                 </td>
                 <td>
-                    @foreach (CourseAssignment ca in item.CourseAssignments)
+                    @foreach (CourseAssignment ca in item.CourseAssignments!)
                     {
-                        @ca.Course.CourseID @ca.Course.Title <br/>
+                        @ca?.Course?.CourseID @ca?.Course?.Title <br/>
                     }
                 </td>
             </tr>
@@ -143,8 +143,8 @@
                 //string selectedRow = "";
                 //if (course.CourseID == (int?)ViewData["CourseID"]) selectedRow = "table-success";
 				<tr>
-					<td>@enrollment.Student.FullName</td>
-					<td>@enrollment.Grade</td>
+					<td>@enrollment?.Student?.FullName</td>
+					<td>@Html.DisplayFor(e => enrollment!.Grade)</td>
 				</tr>
 			}
 		</tbody>

@@ -10,30 +10,39 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
+			<div class="form-group">
+				<label asp-for="CourseID" class="control-label"></label>
+				<input asp-for="CourseID" class="form-control" />
+				<span asp-validation-for="CourseID" class="text-danger"></span>
+			</div>
 
-            <div class="form-group">
-                <label asp-for="Credits" class="control-label"></label>
-                <input asp-for="Credits" class="form-control" />
-                <span asp-validation-for="Credits" class="text-danger"></span>
-            </div>
+			<div class="form-group">
+				<label asp-for="Title" class="control-label"></label>
+				<input asp-for="Title" class="form-control" />
+				<span asp-validation-for="Title" class="text-danger"></span>
+			</div>
 
-            <div class="form-group">
-                <label asp-for="Enrollments" class="control-label"></label>
-                <input asp-for="Enrollments" class="form-control" />
-                <span asp-validation-for="Enrollments" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+			<div class="form-group">
+				<label asp-for="Credits" class="control-label"></label>
+				<input asp-for="Credits" class="form-control" />
+				<span asp-validation-for="Credits" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<label asp-for="Department" class="control-label"></label>
+				<select asp-for="DepartmentID" class="form-control" asp-items="ViewBag.DepartmentID">
+					<option value="">---Select department---</option>
+				</select>
+				<span asp-validation-for="DepartmentID" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<input type="submit" value="Create" class="btn btn-primary" />
+			</div>
+		</form>
     </div>
 </div>
 
