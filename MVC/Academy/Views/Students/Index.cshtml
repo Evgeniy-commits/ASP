@@ -1,0 +1,136 @@
+@*@model IEnumerable<Academy.Models.Student>*@
+@model PaginatedList<Student>
+
+@{
+	ViewData["Title"] = "Students";
+}
+
+<h1>Students</h1>
+
+<div class="controls">
+	<form asp-action="Index" method="get">
+		<div>
+			<lable>Поиск по имени: <input type="search" name="SearchString" value="@ViewData["CurrentFilter"]" /></lable>
+			<input type="submit" value="Найти" class="btn btn-primary" />
+			<a asp-action="Index" class="btn btn-secondary">Сброс</a>
+		</div>
+	</form>
+
+	<a asp-action="Create">Create New</a>
+</div>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]">LastName</a>
+			</th>
+			<th>
+				FirstName
+			</th>
+			<th>
+				MiddleName
+			</th>
+			<th>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]">BirthDate</a>
+			</th>
+			<th>
+				Email
+			</th>
+			<th>
+				Phone
+			</th>
+			<th>
+				Photo
+			</th>
+			<th>
+				Group
+			</th>
+			<th>
+				GroupNavigation
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(model => item.LastName)
+				</td>
+				<td>
+					@Html.DisplayFor(model => item.FirstName)
+				</td>
+				<td>
+					@Html.DisplayFor(model => item.MiddleName)
+				</td>
+				<td>
+					@Html.DisplayFor(model => item.BirthDate)
+				</td>
+				<td>
+					@Html.DisplayFor(model => item.Email)
+				</td>
+				<td>
+					@Html.DisplayFor(model => item.Phone)
+				</td>
+				<td>
+					@if (item.Photo != null && item.Photo.Length > 0)
+					{
+						<img src="@Url.Action("GetPhoto", "Students", new { id = item.StudId })"
+							 alt="Фото студента"
+							 style="max-width: 100px; max-height : 50px; border-radius: 4px;" />
+					}
+					else
+					{
+						<span style="color: #999;">Нет фото</span>
+					}
+				</td>
+				<td>
+					@Html.DisplayFor(model => item.Group)
+				</td>
+				<td>
+					@Html.DisplayFor(model => item.GroupNavigation)
+				</td>
+				<td>
+					<a asp-action="Edit" asp-route-id="@item.StudId">Edit</a> |
+					<a asp-action="Details" asp-route-id="@item.StudId">Details</a> |
+					<a asp-action="Delete" asp-route-id="@item.StudId">Delete</a>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+@{
+	string prevDisabled = Model.HasPreviosPage ? "" : "disabled";
+	string nextDisabled = Model.HasNextPage ? "" : "disabled";
+}
+
+<div class="pagination-controls">
+	<a asp-action="Index"
+	   asp-route-pageNumber="@(Model.PageIndex - 1)"
+	   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+	   class="btn btn-default @prevDisabled">
+		Prev
+	</a>
+	@*<div>@Model.PageIndex</div>*@
+	<div class="pages">
+		@for (int i = 0; i < Model.TotalPages; i++)
+		{
+			@if (i + 1 == Model.PageIndex)
+			{
+				<a asp-action="Index" asp-route-pageNumber="@(i + 1)" class="page current-page">@(i + 1)</a>
+			}
+			else
+			{
+				<a asp-action="Index" asp-route-pageNumber="@(i + 1)" class="page">@(i + 1)</a>
+			}
+		}
+	</div>
+	<a asp-action="Index"
+	   asp-route-pageNumber="@(Model.PageIndex + 1)"
+	   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+	   class="btn btn-default @nextDisabled">
+		Next
+	</a>
+</div>
