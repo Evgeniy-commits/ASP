@@ -9,48 +9,80 @@
 <h4>Instructor</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div>
+        <form asp-action="Create" style="width: 100%; display: flex; justify-content: space-between">
+			<div>
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
+				<div class="form-group">
+					<label asp-for="LastName" class="control-label"></label>
+					<input asp-for="LastName" class="form-control" />
+					<span asp-validation-for="LastName" class="text-danger"></span>
+				</div>
 
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
-            </div>
+				<div class="form-group">
+					<label asp-for="FirstName" class="control-label"></label>
+					<input asp-for="FirstName" class="form-control" />
+					<span asp-validation-for="FirstName" class="text-danger"></span>
+				</div>
 
-            <div class="form-group">
-                <label asp-for="HireDate" class="control-label"></label>
-                <input asp-for="HireDate" class="form-control" />
-                <span asp-validation-for="HireDate" class="text-danger"></span>
-            </div>
+				<div class="form-group">
+					<label asp-for="HireDate" class="control-label"></label>
+					<input asp-for="HireDate" class="form-control" />
+					<span asp-validation-for="HireDate" class="text-danger"></span>
+				</div>
 
-            <div class="form-group">
-                <label asp-for="FullName" class="control-label"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
-            </div>
+				@*<div class="form-group">
+			<label asp-for="FullName" class="control-label"></label>
+			<input asp-for="FullName" class="form-control" />
+			<span asp-validation-for="FullName" class="text-danger"></span>
+		</div>
 
-            <div class="form-group">
-                <label asp-for="CourseAssignments" class="control-label"></label>
-                <input asp-for="CourseAssignments" class="form-control" />
-                <span asp-validation-for="CourseAssignments" class="text-danger"></span>
-            </div>
+		<div class="form-group">
+			<label asp-for="CourseAssignments" class="control-label"></label>
+			<input asp-for="CourseAssignments" class="form-control" />
+			<span asp-validation-for="CourseAssignments" class="text-danger"></span>
+		</div>
 
-            <div class="form-group">
-                <label asp-for="OfficeAssignment" class="control-label"></label>
-                <input asp-for="OfficeAssignment" class="form-control" />
-                <span asp-validation-for="OfficeAssignment" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+		<div class="form-group">
+			<label asp-for="OfficeAssignment" class="control-label"></label>
+			<input asp-for="OfficeAssignment" class="form-control" />
+			<span asp-validation-for="OfficeAssignment" class="text-danger"></span>
+		</div>*@
+				<div class="form-group">
+					<input type="submit" value="Create" class="btn btn-primary" />
+				</div>
+			</div>
+			<div class="form-group" style="width: 70%">
+				<div>
+					<table style="width: 100%">
+						<tr>
+							@{
+								int count = 0;
+								List<ContosoUniversity.Models.ViewModels.AssignedCourseData> courses = ViewBag.Courses;
+								foreach (ContosoUniversity.Models.ViewModels.AssignedCourseData course in courses)
+								{
+									if (count++ % 3 == 0)
+									{
+									@:</tr><tr>
+									}
+									@:<td>
+										<input type="checkbox"
+											   name="selectedCourses"
+											   value="@course.CourseID"
+											   id="@course.CourseID"
+											   @(Html.Raw(course.Assigned ? "checked=\"checked\"" : "")) />
+
+										<label for="@course.CourseID">
+											@course.CourseID @course.Title
+										</label>
+									@:</td>
+								}
+							@:</tr>
+							}
+					</table>
+				</div>
+			</div>
         </form>
     </div>
 </div>
