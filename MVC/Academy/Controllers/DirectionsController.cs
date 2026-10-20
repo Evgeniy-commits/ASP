@@ -27,6 +27,7 @@ public class DirectionsController : Controller
         }
 
         var direction = await _context.Directions
+            .Include(d=>d.Groups)
             .FirstOrDefaultAsync(m => m.DirectionId == id);
         if (direction == null)
         {

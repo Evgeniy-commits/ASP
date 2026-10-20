@@ -45,11 +45,9 @@ public partial class Student
     //[Column("photoMimeType", TypeName = "NVARCHAR(50)")]
     //public string PhotoMimeType { get; set; }
 
-    [NotMapped]
     [Column("group")]
     public int? Group { get; set; }
 
-    [NotMapped]
     [ForeignKey("Group")]
     [InverseProperty("Students")]
     public virtual Group GroupNavigation { get; set; }

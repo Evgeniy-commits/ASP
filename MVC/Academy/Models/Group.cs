@@ -31,7 +31,11 @@ public partial class Group
     [Column("start_date")]
     public DateOnly? StartDate { get; set; }
 
-    [NotMapped]
+    //Navigation properties
+    [ForeignKey(nameof(Direction))]
+    [InverseProperty("Groups")]
+    public virtual Direction? DirectionNavigation { get; set; }
+
     [InverseProperty("GroupNavigation")]
     public virtual ICollection<Student> Students { get; set; } = new List<Student>();
 }

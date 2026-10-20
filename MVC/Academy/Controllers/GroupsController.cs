@@ -28,6 +28,7 @@ public class GroupsController : Controller
         }
 
         var group = await _context.Groups
+            .Include(g => g.Students)
             .FirstOrDefaultAsync(m => m.GroupId == id);
         if (group == null)
         {

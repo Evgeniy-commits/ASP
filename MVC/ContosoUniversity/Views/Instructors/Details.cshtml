@@ -16,40 +16,40 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.LastName)
         </dd>
-    </dl>
+    
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FirstName)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.FirstName)
         </dd>
-    </dl>
+    
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.HireDate)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.HireDate)
         </dd>
-    </dl>
-        <dt class = "col-sm-2">
+    
+        @*<dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FullName)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.FullName)
         </dd>
-    </dl>
+    
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.CourseAssignments)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.CourseAssignments)
-        </dd>
-    </dl>
+        </dd>*@
+    
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.OfficeAssignment)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.OfficeAssignment)
+            @Html.DisplayFor(model => model.OfficeAssignment.Location)
         </dd>
     </dl>
 </div>

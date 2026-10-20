@@ -1,24 +1,58 @@
 @model Academy.Models.Direction
 
 @{
-    ViewData["Title"] = "Details";
+	ViewData["Title"] = "Direction";
 }
 
-<h1>Details</h1>
+<h2>@Html.DisplayFor(model => model.DirectionName)</h2>
+
+<hr />
 
 <div>
-    <h4>Direction</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DirectionName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DirectionName)
-        </dd>
-    </dl>
+	<h4>Direction</h4>
+	<hr />
+	<dl class="row">
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.DirectionName)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.DirectionName)
+		</dd>
+	</dl>
 </div>
+
+<h3>Группы по направлению: </h3>
+
+@if (Model.Groups != null && Model.Groups.Any())
+{
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Имя группы</th>
+				<th>Дни недели</th>
+				<th>Время начала</th>
+				<th>Дата начала</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (Group group in Model.Groups)
+			{
+				<tr>
+					<td>@Html.DisplayFor(item => group.GroupName)</td>
+					<td>@Html.DisplayFor(item => group.Weekdays)</td>
+					<td>@Html.DisplayFor(item => group.StartTime)</td>
+					<td>@Html.DisplayFor(item => group.StartDate)</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+else
+{
+	<div>По этому направлению групп нет</div>
+}
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.DirectionId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Edit" asp-route-id="@Model?.DirectionId">Edit</a> |
+	<a asp-action="Index">Back to List</a>
 </div>
