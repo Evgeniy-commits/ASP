@@ -20,4 +20,7 @@ public partial class Discipline
 
     [Column("number_of_lessons", TypeName = "TINYINT")]
     public int NumberOfLessons { get; set; }
+
+    public virtual ICollection<TeachersDisciplinesRelation> TeacherDisciplines { get; set; } = new List<TeachersDisciplinesRelation>();
+    public virtual ICollection<DisciplinesDirectionsRelation> DisciplinesDirections { get; set; } = new List<DisciplinesDirectionsRelation>();
 }

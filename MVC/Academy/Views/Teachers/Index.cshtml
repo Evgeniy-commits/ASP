@@ -33,7 +33,7 @@
 			<th>
 				<a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]">Birth Date</a>
 			</th>
-			<th>
+			@*<th>
 				Email
 			</th>
 			<th>
@@ -41,12 +41,15 @@
 			</th>
 			<th>
 				Photo
-			</th>
+			</th>*@
 			<th>
 				WorkSince
 			</th>
 			<th>
 				Rate
+			</th>
+			<th>
+				Disciplines
 			</th>
 			<th></th>
 		</tr>
@@ -67,7 +70,7 @@
 				<td>
 					@Html.DisplayFor(model => item.BirthDate)
 				</td>
-				<td>
+				@*<td>
 					@Html.DisplayFor(model => item.Email)
 				</td>
 				<td>
@@ -82,14 +85,27 @@
 					}
 					else
 					{
-						<span style="color: #999;">Нет фото</span>
+						<span>Нет фото</span>
 					}
-				</td>
+				</td>*@
 				<td>
 					@Html.DisplayFor(model => item.WorkSince)
 				</td>
 				<td>
 					@Html.DisplayFor(model => item.Rate)
+				</td>
+				<td>
+					@if (item.TeacherDisciplines != null && item.TeacherDisciplines.Any())
+					{
+						foreach (var td in item.TeacherDisciplines.Where(td => td.DisciplineNavigation != null))
+						{
+							<div>@td.DisciplineNavigation?.DisciplineName</div>
+						}
+					}
+					else
+					{
+						<span>Нет дисциплин</span>
+					}
 				</td>
 				<td>
 					<a asp-action="Edit" asp-route-id="@item.TeacherId">Edit</a> |

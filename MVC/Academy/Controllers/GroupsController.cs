@@ -16,6 +16,10 @@ public class GroupsController : Controller
     // GET: GROUPS
     public async Task<IActionResult> Index()    
     {
+        var groups = await _context.Groups
+                                .Include(g => g.Students)
+                                .Include(g => g.DirectionNavigation)
+                                .ToListAsync();
         return View(await _context.Groups.ToListAsync());
     }
 

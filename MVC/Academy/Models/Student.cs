@@ -45,10 +45,19 @@ public partial class Student
     //[Column("photoMimeType", TypeName = "NVARCHAR(50)")]
     //public string PhotoMimeType { get; set; }
 
+    //[Column("DirectionId")]
+    //public int DirectionId { get; set; }
+
+    //[ForeignKey("DirectionId")]
+    //[InverseProperty("Group")]
+    //public virtual Direction DirectionNavigation { get; set; }
+
     [Column("group")]
     public int? Group { get; set; }
 
     [ForeignKey("Group")]
     [InverseProperty("Students")]
     public virtual Group GroupNavigation { get; set; }
+
+    //public virtual ICollection<Student> Students { get; set; } = new List<Student>();
 }

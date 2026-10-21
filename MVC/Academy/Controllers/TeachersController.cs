@@ -46,7 +46,10 @@ public class TeachersController : Controller
         if (searchString != null) pageNumber = 1;
         ViewData["CurrentFilter"] = searchString;
 
-        IQueryable<Teacher> teachers = from teacher in _context.Teachers select teacher;
+        //IQueryable<Teacher> teachers = from teacher in _context.Teachers select teacher;
+        IQueryable<Teacher> teachers = _context.Teachers
+                                .Include(t => t.TeacherDisciplines)
+                                    .ThenInclude(td => td.DisciplineNavigation);
 
         if (!String.IsNullOrEmpty(searchString))
         {

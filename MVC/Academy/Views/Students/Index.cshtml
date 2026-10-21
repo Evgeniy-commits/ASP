@@ -22,31 +22,31 @@
 	<thead>
 		<tr>
 			<th>
-				<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]">LastName</a>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParam"]">Фамилия</a>
 			</th>
 			<th>
-				FirstName
+				Имя
 			</th>
 			<th>
-				MiddleName
+				Отчество
 			</th>
 			<th>
-				<a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]">BirthDate</a>
+				<a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParam"]">Дата рождения</a>
 			</th>
 			<th>
 				Email
 			</th>
 			<th>
-				Phone
+				Телефон
 			</th>
 			<th>
-				Photo
+				Фото
 			</th>
 			<th>
-				Group
+				Группа
 			</th>
 			<th>
-				GroupNavigation
+				Направление обучения
 			</th>
 			<th></th>
 		</tr>
@@ -86,10 +86,24 @@
 					}
 				</td>
 				<td>
-					@Html.DisplayFor(model => item.Group)
+					@if(item.GroupNavigation != null)
+					{
+						@item.GroupNavigation.GroupName
+					}
+					else
+					{
+						<span>Не указана</span>
+					}
 				</td>
 				<td>
-					@Html.DisplayFor(model => item.GroupNavigation)
+					@if(item.GroupNavigation?.DirectionNavigation != null)
+					{
+						@($"{item.GroupNavigation.DirectionNavigation.DirectionName}")
+					}
+					else
+					{
+						<span>Не указано</span>
+					}
 				</td>
 				<td>
 					<a asp-action="Edit" asp-route-id="@item.StudId">Edit</a> |

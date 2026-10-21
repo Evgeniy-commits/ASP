@@ -18,24 +18,56 @@
             <th>
                 @Html.DisplayNameFor(model => model.NumberOfLessons)
             </th>
+            <th>
+                Teachers
+            </th>
+            @*<th>
+                Directions
+            </th>*@
             <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.DisciplineName)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.NumberOfLessons)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.DisciplineId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.DisciplineId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.DisciplineId">Delete</a>
-            </td>
-        </tr>
+		<tr>
+			<td>
+				@Html.DisplayFor(model => item.DisciplineName)
+			</td>
+			<td>
+				@Html.DisplayFor(model => item.NumberOfLessons)
+			</td>
+			<td>
+				@if (item.TeacherDisciplines != null && item.TeacherDisciplines.Any())
+				{
+					foreach (var td in item.TeacherDisciplines.Where(td => td.TeacherNavigation != null))
+					{
+						<div>@td.TeacherNavigation?.LastName @td.TeacherNavigation?.FirstName</div>
+					}
+				}
+				else
+				{
+					<span>Нет преподавателей</span>
+				}
+			</td>
+			@*<td>
+				@if (item.DisciplinesDirections != null && item.DisciplinesDirections.Any())
+				{
+					foreach (var dd in item.DisciplinesDirections.Where(dd => dd.DirectionNavigation != null))
+					{
+						<div>@dd.DirectionNavigation.DirectionName</div>
+					}
+				}
+				else
+				{
+					<span>Нет направлений</span>
+				}
+			</td>*@
+			<td>
+				<a asp-action="Edit" asp-route-id="@item.DisciplineId">Edit</a> |
+				<a asp-action="Details" asp-route-id="@item.DisciplineId">Details</a> |
+				<a asp-action="Delete" asp-route-id="@item.DisciplineId">Delete</a>
+			</td>
+		</tr>
 }
     </tbody>
 </table>

@@ -48,4 +48,6 @@ public partial class Teacher
 
     [Column("rate", TypeName = "smallmoney")]
     public decimal? Rate { get; set; }
+
+    public virtual ICollection<TeachersDisciplinesRelation> TeacherDisciplines { get; set; } = new List<TeachersDisciplinesRelation>();
 }

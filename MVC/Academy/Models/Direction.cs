@@ -12,5 +12,8 @@ namespace Academy.Models
         [Column("direction_name")]
         [StringLength(150)]
         public string? DirectionName { get; set; }
+
+        public virtual ICollection<Group> Groups { get; set; } = new List<Group>();
+        public virtual ICollection<DisciplinesDirectionsRelation> DisciplinesDirections { get; set; } = new List<DisciplinesDirectionsRelation>();
     }
 }

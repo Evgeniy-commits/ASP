@@ -46,7 +46,11 @@ public class StudentsController : Controller
         if (searchString != null) pageNumber = 1;
         ViewData["CurrentFilter"] = searchString;
 
-        IQueryable<Student> students = from student in _context.Students select student;
+        IQueryable<Student> students = _context.Students
+                                .Include(s => s.GroupNavigation)
+                                    .ThenInclude(g => g.DirectionNavigation);
+
+        //IQueryable<Student> students = from student in _context.Students select student;
 
         if (!String.IsNullOrEmpty(searchString))
         {

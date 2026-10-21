@@ -15,7 +15,13 @@ public class DisciplinesController : Controller
     // GET: DISCIPLINES
     public async Task<IActionResult> Index()    
     {
-        return View(await _context.Disciplines.ToListAsync());
+        IQueryable<Discipline>? disciplines = _context.Disciplines
+                                        .Include(d => d.TeacherDisciplines)
+                                            .ThenInclude(td => td.TeacherNavigation)
+                                        .Include(d => d.DisciplinesDirections)
+                                            .ThenInclude(dd => dd.DirectionNavigation)
+                                        .AsNoTracking();
+        return View(disciplines);
     }
 
     // GET: DISCIPLINES/Details/5
